@@ -1,21 +1,30 @@
 @tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+* {
+  @apply p-0 m-0 box-border;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bgcolor: #f9fafb;
+  --secondaryBgcolor: #f3f4f6;
+  --textColor: #000;
+  --secondaryTextColor: #374151;
+  --accentColor: #0072f5;
+  --borderColor: #e5e7eb;
+  --transAccentColor: #0072f52f;
 }
+.dark {
+  --bgcolor: #000000;
+  --secondaryBgcolor: #0a0a0a;
+  --textColor: #fff;
+  --secondaryTextColor: #6f6f6f;
+  --accentColor: #0072f5;
+  --transAccentColor: #0072f52f;
+  --borderColor: #333333;
+}
+@tailwind components;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
+@tailwind utilities;

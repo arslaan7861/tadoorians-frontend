@@ -9,10 +9,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: "var(--bgcolor)",
+        secondaryBackground: "var(--secondaryBgcolor)",
+        textColor: "var(--textColor)",
+        secondaryTextColor: "var(--secondaryTextColor)",
+        accentColor: "var(--accentColor)",
+        transAccentColor: "var(--transAccentColor)",
+        bordercolor: "var(--borderColor)",
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar")],
 } satisfies Config;
