@@ -2,15 +2,17 @@ import React, { useState } from "react";
 import RestaurantBillCard from "./Billcards";
 import { tableType } from "@/utils/types";
 import { useDispatch } from "react-redux";
-import { updateTable } from "@/State/Tables";
+import { getData, updateTable } from "@/State/Tables";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
+import { AppDispatch } from "@/State";
 interface propsType {
   table: tableType;
 }
 function BillInfo({ table }: propsType) {
   const [isOpen, setIsOpen] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const updateOrder = () => {
+    dispatch(getData());
     const { totalAmount, totalDishes } = calculateAmountAndDishes(table);
     dispatch(updateTable({ ...table, totalAmount, totalDishes }));
   };

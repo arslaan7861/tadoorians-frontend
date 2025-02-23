@@ -18,18 +18,15 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
   ) {
     setTable((oldState) => {
       const newState = { ...oldState };
-      newState.totalDishes -=
-        oldState.OrderDetails[selectedCategory][index].sizes[size].quantity;
+      newState.totalDishes -= oldState.OrderDetails[index].sizes[size].quantity;
       newState.OrderDetails = { ...oldState.OrderDetails };
-      newState.OrderDetails[selectedCategory] = [
-        ...oldState.OrderDetails[selectedCategory],
-      ];
-      newState.OrderDetails[selectedCategory][index] = {
-        ...oldState.OrderDetails[selectedCategory][index],
+      newState.OrderDetails = [...oldState.OrderDetails];
+      newState.OrderDetails[index] = {
+        ...oldState.OrderDetails[index],
         sizes: {
-          ...oldState.OrderDetails[selectedCategory][index].sizes,
+          ...oldState.OrderDetails[index].sizes,
           [size]: {
-            ...oldState.OrderDetails[selectedCategory][index].sizes[size],
+            ...oldState.OrderDetails[index].sizes[size],
             quantity: quantity,
           },
         },
@@ -47,16 +44,21 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
         setSelectedCategory={setSelectedCategory}
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full py-2 overflow-y-auto scrollbar-none bg-background">
-        {table.OrderDetails[selectedCategory].map((item, index) => (
+        {table.OrderDetails.filter(
+          (item) => item.category === selectedCategory
+        ).map((item, index) => (
           <article
             key={index}
             className="p-4 border border-bordercolor shadow-sm hover:shadow-xl transition-all flex flex-col items-center rounded-md"
           >
-            <Image
-              src={item.image}
-              alt={item.name}
-              className="w-full rounded-md h-40 object-cover mb-3"
-            />
+            <article className="mb-3 w-full h-40 relative">
+              <Image
+                src={"/images/placeholder.jpg"}
+                alt={item.name}
+                fill
+                className="w-full rounded-md h-40 object-cover"
+              />
+            </article>
             <h3 className="text-lg font-semibold mb-2">{item.name}</h3>
             <div className="grid grid-cols-3 gap-2 w-full">
               {Object.entries(item.sizes).map(([size, { price, quantity }]) => (
@@ -72,7 +74,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
                         increase(
                           index,
                           size as "quarter" | "half" | "full",
-                          quantity === 0 ? 0 : quantity - 1
+                          quantity <= 0 ? 0 : quantity - 1
                         )
                       }
                       className="px-2 py-1 "

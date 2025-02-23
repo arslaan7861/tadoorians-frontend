@@ -14,7 +14,7 @@ const menuItems = [
 function DesktopSidebar() {
   return (
     <>
-      <aside className="hidden w-64 md:block border-r border-bordercolor bg-background ">
+      <aside className="hidden w-min md:block border-r border-bordercolor bg-background ">
         <nav className="p-4">
           <ul className="space-y-2">
             {menuItems.map((item) => (
