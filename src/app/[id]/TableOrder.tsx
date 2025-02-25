@@ -10,6 +10,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
   const { tables } = useSelector((state: RootState) => state.tables);
   const [selectedCategory, setSelectedCategory] = useState<string>("Starter");
   const [table, setTable] = useState(tables[tableId]);
+  const [isUpdated, setIsupdated] = useState(true);
   useEffect(() => {
     console.log("setting tables");
     setTable(tables[tableId]);
@@ -20,6 +21,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
     size: "quarter" | "half" | "full",
     quantity: number
   ) {
+    setIsupdated(false);
     setTable((oldState) => {
       const newState = { ...oldState };
       newState.OrderDetails = oldState.OrderDetails.map((order) => {
@@ -117,7 +119,11 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
           </article>
         ))}
       </div>
-      <BillInfo table={table} />
+      <BillInfo
+        isUpdated={isUpdated}
+        setIsupdated={setIsupdated}
+        table={table}
+      />
     </div>
   );
 }

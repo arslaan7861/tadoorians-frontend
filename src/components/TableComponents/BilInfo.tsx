@@ -1,20 +1,25 @@
-import React, { useState } from "react";
+import React, { SetStateAction, useState } from "react";
 import RestaurantBillCard from "./Billcards";
 import { tableType } from "@/utils/types";
 import { useDispatch } from "react-redux";
 import { updateTable } from "@/State/Tables";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
 import { AppDispatch } from "@/State";
+import { ArrowRight, LoaderCircle } from "lucide-react";
 interface propsType {
   table: tableType;
+  isUpdated: boolean;
+  setIsupdated: (value: SetStateAction<boolean>) => void;
 }
-function BillInfo({ table }: propsType) {
+function BillInfo({ table, isUpdated, setIsupdated }: propsType) {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const updateOrder = () => {
+  const [isUpdating, setIsUpdating] = useState(false);
+  const updateOrder = async () => {
     const { totalAmount, totalDishes } = calculateAmountAndDishes(table);
     console.log("updating table");
-    dispatch(
+    setIsUpdating(true);
+    await dispatch(
       updateTable({
         ...table,
         totalAmount,
@@ -22,6 +27,9 @@ function BillInfo({ table }: propsType) {
         lastUpdated: table.lastUpdated + 1,
       })
     );
+    setIsUpdating(false);
+    setIsupdated(true);
+    console.log("updated");
   };
   return (
     <>
@@ -29,20 +37,30 @@ function BillInfo({ table }: propsType) {
         <article className="hidden md:block text-lg">
           Total dishes : {table.totalDishes}
         </article>
-        <article className="flex gap-5 items-center text-lg">
-          <button
-            onClick={updateOrder}
-            className="text-lg text-accentColor border border-accentColor px-4 py-1 rounded-md"
-          >
-            Update order
-          </button>
-          <span>Total Bill :</span>
-          <button
-            onClick={() => setIsOpen(true)}
-            className="bg-accentColor h-min text-white px-4 py-1 rounded-md text-lg shadow-lg hover:scale-105 transition-transform"
-          >
-            ₹{table.totalAmount}
-          </button>
+        <article className="flex flex-grow sm:flex-grow-0 gap-5 justify-between items-center text-sm md:text-lg">
+          {!isUpdated && (
+            <button
+              disabled={isUpdated || isUpdating}
+              onClick={updateOrder}
+              className=" flex items-center gap-2 text-sm md:text-lg text-accentColor border border-accentColor px-4 py-1 rounded-md"
+            >
+              <span> Save order</span>
+              {isUpdating ? (
+                <LoaderCircle className="animate-spin text-xs" />
+              ) : (
+                <ArrowRight className="text-xs" />
+              )}
+            </button>
+          )}
+          <section className="flex ml-auto items-center gap-2">
+            <span>Total Bill :</span>
+            <button
+              onClick={() => setIsOpen(true)}
+              className="bg-accentColor h-min text-white px-4 py-1 rounded-md text-lg shadow-lg hover:scale-105 transition-transform"
+            >
+              ₹{table.totalAmount}
+            </button>
+          </section>
         </article>
       </section>
       {/* Bill card  */}

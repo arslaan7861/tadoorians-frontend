@@ -3,6 +3,7 @@ import { UpdateServerTable } from "@/Server-actions/updateOrders";
 import { menuData } from "@/utils/menu";
 import { OrdersState, tableType } from "@/utils/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { addToast } from "./toast";
 
 export const initialState: OrdersState = {
   tables: {
@@ -100,6 +101,13 @@ export const updateTable = createAsyncThunk(
       }
       dispatch(updateTableState(table));
       console.log("updated table state");
+      dispatch(
+        addToast({
+          message: "Saved orders succecfully!",
+          status: "success",
+          timestamp: 0,
+        })
+      );
     } catch (error) {
       console.log(error);
       return rejectWithValue("Failed to fetch data");
