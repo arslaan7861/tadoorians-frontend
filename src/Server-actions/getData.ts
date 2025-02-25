@@ -11,12 +11,6 @@ export async function getMenu() {
 }
 export async function populateTables() {
   try {
-    await TableModel.deleteMany();
-    for (const [id, data] of Object.entries(initialState.tables)) {
-      const tab = await TableModel.create({ ...data });
-      console.log({ tab: tab._id, id: tab.tableId });
-    }
-    console.log("created successfully");
   } catch (error) {
     console.log("Error while populating tables:", error);
   }
@@ -27,9 +21,14 @@ export async function getTablesData() {
     console.log("getting tables data");
     //get data from database return it
     await connectDB();
-    const tables = await TableModel.find();
-    console.log(tables.length);
-    return JSON.stringify(tables);
+    //*code to insert initial tables
+    // await TableModel.deleteMany();
+    // const tables = await TableModel.create([
+    //   ...Object.values(initialState.tables),
+    // ]);
+    const table = await TableModel.find();
+    console.log(table[0].OrderDetails[0].sizes);
+    return JSON.stringify(table);
   } catch (error) {
     console.log(error);
   }

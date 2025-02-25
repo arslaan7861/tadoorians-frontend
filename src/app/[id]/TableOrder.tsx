@@ -1,37 +1,54 @@
 "use client";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/State";
 import CategorySelectNav from "../../components/TableComponents/CategorySelectNav";
 import BillInfo from "@/components/TableComponents/BilInfo";
 import Image from "next/image";
+import { tableType } from "@/utils/types";
+import { initTables } from "@/State/Tables";
 
 export default function RestaurantMenu({ tableId }: { tableId: string }) {
   const { tables } = useSelector((state: RootState) => state.tables);
   const [selectedCategory, setSelectedCategory] = useState<string>("Starter");
   const [table, setTable] = useState(tables[tableId]);
+  useEffect(() => {
+    console.log("setting tables");
+    setTable(tables[tableId]);
+  }, [tables]);
 
   function increase(
-    index: number,
+    name: string, // Assuming each order has a unique 'id'
     size: "quarter" | "half" | "full",
     quantity: number
   ) {
     setTable((oldState) => {
       const newState = { ...oldState };
-      newState.totalDishes -= oldState.OrderDetails[index].sizes[size].quantity;
-      newState.OrderDetails = { ...oldState.OrderDetails };
-      newState.OrderDetails = [...oldState.OrderDetails];
-      newState.OrderDetails[index] = {
-        ...oldState.OrderDetails[index],
-        sizes: {
-          ...oldState.OrderDetails[index].sizes,
-          [size]: {
-            ...oldState.OrderDetails[index].sizes[size],
-            quantity: quantity,
-          },
-        },
-      };
-      newState.totalDishes += quantity;
+      newState.OrderDetails = oldState.OrderDetails.map((order) => {
+        if (order.name === name) {
+          // Adjust totalDishes by removing the previous quantity first
+          newState.totalDishes -= order.sizes[size].quantity;
+
+          // Update the order with the new quantity
+          const updatedOrder = {
+            ...order,
+            sizes: {
+              ...order.sizes,
+              [size]: {
+                ...order.sizes[size],
+                quantity: quantity,
+              },
+            },
+          };
+
+          // Adjust totalDishes with the new quantity
+          newState.totalDishes += quantity;
+
+          return updatedOrder;
+        }
+        return order;
+      });
+
       return newState;
     });
   }
@@ -72,7 +89,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
                     <button
                       onClick={() =>
                         increase(
-                          index,
+                          item.name,
                           size as "quarter" | "half" | "full",
                           quantity <= 0 ? 0 : quantity - 1
                         )
@@ -85,7 +102,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
                     <button
                       onClick={() =>
                         increase(
-                          index,
+                          item.name,
                           size as "quarter" | "half" | "full",
                           quantity + 1
                         )

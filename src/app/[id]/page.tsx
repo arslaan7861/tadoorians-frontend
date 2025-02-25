@@ -1,6 +1,5 @@
 import React from "react";
 import RestaurantMenu from "./TableOrder";
-import Dish from "@/DB/MenuModel";
 type PageProps = {
   params: Promise<{ id: string }>;
 };

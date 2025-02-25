@@ -26,6 +26,7 @@ export interface tableType {
   totalDishes: number;
   OrderDetails: MenuItem[];
   _id?: string;
+  lastUpdated: number;
 }
 export interface OrdersState {
   tables: Record<string, tableType>;

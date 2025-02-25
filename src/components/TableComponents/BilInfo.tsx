@@ -12,9 +12,16 @@ function BillInfo({ table }: propsType) {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const updateOrder = () => {
-    dispatch(getData());
     const { totalAmount, totalDishes } = calculateAmountAndDishes(table);
-    dispatch(updateTable({ ...table, totalAmount, totalDishes }));
+    console.log("updating table");
+    dispatch(
+      updateTable({
+        ...table,
+        totalAmount,
+        totalDishes,
+        lastUpdated: table.lastUpdated + 1,
+      })
+    );
   };
   return (
     <>

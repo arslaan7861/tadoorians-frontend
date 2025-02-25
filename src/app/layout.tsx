@@ -7,18 +7,12 @@ import MobileSidebar from "@/components/RootComponents/MobileSidebar";
 import DesktopSidebar from "@/components/RootComponents/DesktopSidebar";
 import { ThemeProvider } from "@/components/theme/provider";
 import StateProvider from "@/State";
-import connectDB from "@/DB";
-import { populateTables } from "@/Server-actions/getData";
 
 interface RootLayoutProps {
   children: ReactNode;
 }
 
 export default async function RootLayout({ children }: RootLayoutProps) {
-  await connectDB();
-  await populateTables();
-  console.log("created tables");
-
   return (
     <StateProvider>
       <ThemeProvider>

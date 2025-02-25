@@ -4,10 +4,11 @@ import { DishSchema } from "./MenuModel";
 
 // Define the Mongoose Schema
 const TableSchema: Schema = new Schema({
-  tableId: String,
+  tableId: { type: String, unique: true },
   totalAmount: { type: Number, default: 0 },
   totalDishes: { type: Number, default: 0 },
   OrderDetails: [DishSchema],
+  lastUpdated: { type: Number, default: 0 },
 });
 interface TableSchemaType extends Document, tableType {}
 // Export the model

@@ -1,0 +1,21 @@
+"use server";
+
+import TableModel from "@/DB/tableData";
+import { tableType } from "@/utils/types";
+
+export async function UpdateServerTable(
+  table: tableType
+): Promise<{ ok: boolean }> {
+  try {
+    const tableData = await TableModel.findOneAndUpdate(
+      { tableId: table.tableId },
+      { ...table },
+      { new: true }
+    );
+    console.log(tableData.OrderDetails[0].sizes);
+
+    return { ok: true };
+  } catch (error) {
+    return { ok: false };
+  }
+}

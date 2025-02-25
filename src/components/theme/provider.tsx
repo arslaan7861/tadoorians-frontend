@@ -1,4 +1,7 @@
 "use client";
+import { AppDispatch } from "@/State";
+import { getData, initTables } from "@/State/Tables";
+import { tableType } from "@/utils/types";
 import {
   createContext,
   useContext,
@@ -7,6 +10,7 @@ import {
   useRef,
   useEffect,
 } from "react";
+import { useDispatch } from "react-redux";
 interface ThemeContextType {
   theme: string;
   toggleTheme: () => void;
@@ -17,6 +21,7 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const doc = useRef<HTMLHtmlElement>(null);
   const [theme, setTheme] = useState("light");
   useEffect(() => {
@@ -25,6 +30,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   }, []);
   useEffect(() => {
     localStorage.setItem("theme", theme);
+    dispatch(getData());
   }, [theme]);
 
   const toggleTheme = () => {
