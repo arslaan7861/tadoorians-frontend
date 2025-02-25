@@ -4,6 +4,7 @@ import TableModel from "@/DB/tableData";
 
 export async function getMenu() {
   console.log("getting data");
+
   return "hello";
 }
 export async function populateTables() {
