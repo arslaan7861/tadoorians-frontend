@@ -85,6 +85,7 @@ export const getData = createAsyncThunk(
       const resp = (await getTablesData()) as string;
       dispatch(initTables(JSON.parse(resp) as tableType[]));
     } catch (error) {
+      console.log(error);
       return rejectWithValue("Failed to fetch data");
     }
   }
@@ -100,6 +101,7 @@ export const updateTable = createAsyncThunk(
       dispatch(updateTableState(table));
       console.log("updated table state");
     } catch (error) {
+      console.log(error);
       return rejectWithValue("Failed to fetch data");
     }
   }
@@ -118,7 +120,7 @@ const tableOrdersSlice = createSlice({
       console.log("updated tables from server");
     },
   },
-  extraReducers: (builder) => {},
+  // extraReducers: (builder) => {},
 });
 export const { updateTableState, initTables } = tableOrdersSlice.actions;
 export default tableOrdersSlice.reducer;

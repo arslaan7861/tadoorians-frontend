@@ -1,12 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/State";
 import CategorySelectNav from "../../components/TableComponents/CategorySelectNav";
 import BillInfo from "@/components/TableComponents/BilInfo";
 import Image from "next/image";
-import { tableType } from "@/utils/types";
-import { initTables } from "@/State/Tables";
 
 export default function RestaurantMenu({ tableId }: { tableId: string }) {
   const { tables } = useSelector((state: RootState) => state.tables);
@@ -15,7 +13,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
   useEffect(() => {
     console.log("setting tables");
     setTable(tables[tableId]);
-  }, [tables]);
+  }, [tables, tableId]);
 
   function increase(
     name: string, // Assuming each order has a unique 'id'

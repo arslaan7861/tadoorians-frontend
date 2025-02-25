@@ -1,7 +1,6 @@
 "use client";
 import { AppDispatch } from "@/State";
-import { getData, initTables } from "@/State/Tables";
-import { tableType } from "@/utils/types";
+import { getData } from "@/State/Tables";
 import {
   createContext,
   useContext,

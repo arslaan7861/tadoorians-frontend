@@ -1,8 +1,6 @@
 "use server";
-
 import connectDB from "@/DB";
 import TableModel from "@/DB/tableData";
-import { initialState } from "@/State/Tables";
 
 export async function getMenu() {
   console.log("getting data");

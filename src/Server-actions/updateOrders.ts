@@ -16,6 +16,7 @@ export async function UpdateServerTable(
 
     return { ok: true };
   } catch (error) {
+    console.log(error);
     return { ok: false };
   }
 }

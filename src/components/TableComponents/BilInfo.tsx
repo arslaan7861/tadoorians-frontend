@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import RestaurantBillCard from "./Billcards";
 import { tableType } from "@/utils/types";
 import { useDispatch } from "react-redux";
-import { getData, updateTable } from "@/State/Tables";
+import { updateTable } from "@/State/Tables";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
 import { AppDispatch } from "@/State";
 interface propsType {
@@ -41,7 +41,7 @@ function BillInfo({ table }: propsType) {
             onClick={() => setIsOpen(true)}
             className="bg-accentColor h-min text-white px-4 py-1 rounded-md text-lg shadow-lg hover:scale-105 transition-transform"
           >
-            ₹{500}
+            ₹{table.totalAmount}
           </button>
         </article>
       </section>
