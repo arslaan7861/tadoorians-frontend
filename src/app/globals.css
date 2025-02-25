@@ -21,7 +21,7 @@ input[type="number"]::-webkit-outer-spin-button {
   --secondaryBgcolor: #0a0a0a;
   --textColor: #fff;
   --secondaryTextColor: #6f6f6f;
-  --accentColor: #167ef6;
+  --accentColor: #0072f5;
   --transAccentColor: #0072f52f;
   --borderColor: #333333;
 }

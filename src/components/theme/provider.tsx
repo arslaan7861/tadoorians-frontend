@@ -26,10 +26,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme") || "light";
     setTheme(storedTheme);
-    dispatch(getData());
   }, []);
   useEffect(() => {
     localStorage.setItem("theme", theme);
+    dispatch(getData());
   }, [theme]);
 
   const toggleTheme = () => {

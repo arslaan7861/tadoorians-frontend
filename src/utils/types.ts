@@ -51,7 +51,7 @@ export interface IDish extends Document {
 }
 
 export interface toastType {
-  message: string;
-  status: "success" | "error";
+  message: true;
+  status: "success" | "error" | "loading";
   timestamp: number;
 }
