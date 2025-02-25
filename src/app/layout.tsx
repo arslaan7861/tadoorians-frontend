@@ -7,6 +7,7 @@ import MobileSidebar from "@/components/RootComponents/MobileSidebar";
 import DesktopSidebar from "@/components/RootComponents/DesktopSidebar";
 import { ThemeProvider } from "@/components/theme/provider";
 import StateProvider from "@/State";
+import ToastProvider from "@/components/toast/toastProvider";
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -17,6 +18,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     <StateProvider>
       <ThemeProvider>
         <div className="flex flex-col h-svh">
+          <ToastProvider />
           <Titlebar />
           <section className="flex flex-1 overflow-hidden flex-col md:flex-row">
             <DesktopSidebar />

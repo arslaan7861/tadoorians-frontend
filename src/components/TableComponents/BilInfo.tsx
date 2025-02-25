@@ -26,7 +26,7 @@ function BillInfo({ table }: propsType) {
   return (
     <>
       <section className="absolute bottom-0 px-6 w-full h-16 flex justify-between items-center border-t border-bordercolor bg-background">
-        <article className="text-lg">
+        <article className="hidden md:block text-lg">
           Total dishes : {table.totalDishes}
         </article>
         <article className="flex gap-5 items-center text-lg">

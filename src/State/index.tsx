@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import toastReducer from "@/State/toast";
 import tableReducer from "@/State/Tables";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
@@ -7,6 +8,7 @@ import { Provider } from "react-redux";
 export const store = configureStore({
   reducer: {
     tables: tableReducer,
+    toast: toastReducer,
   },
 });
 

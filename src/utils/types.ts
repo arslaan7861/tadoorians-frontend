@@ -49,3 +49,9 @@ export interface IDish extends Document {
   };
   category: string;
 }
+
+export interface toastType {
+  message: true;
+  status: "success" | "error" | "loading";
+  timestamp: number;
+}

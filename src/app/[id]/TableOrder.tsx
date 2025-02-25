@@ -72,6 +72,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
                 alt={item.name}
                 fill
                 className="w-full rounded-md h-40 object-cover"
+                loading="lazy"
               />
             </article>
             <h3 className="text-lg font-semibold mb-2">{item.name}</h3>
