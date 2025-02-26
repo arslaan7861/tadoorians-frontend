@@ -1,15 +1,16 @@
 import React from "react";
 import {
   ChartNoAxesCombined,
-  ReceiptText,
   ChefHat,
   IndianRupee,
+  Utensils,
 } from "lucide-react";
+import Link from "next/link";
 const menuItems = [
-  { icon: IndianRupee, label: "Price" },
-  { icon: ReceiptText, label: "Bill" },
-  { icon: ChefHat, label: "Kitchen" },
-  { icon: ChartNoAxesCombined, label: "History" },
+  { icon: IndianRupee, label: "price" },
+  { icon: Utensils, label: "table" },
+  { icon: ChefHat, label: "kitchen" },
+  { icon: ChartNoAxesCombined, label: "history" },
 ];
 
 function MobileSidebar() {
@@ -18,13 +19,14 @@ function MobileSidebar() {
       <div className="md:hidden w-full h-16 bg-background border-t border-bordercolor p-4">
         <div className="grid grid-cols-4 h-full">
           {menuItems.map((item) => (
-            <button
+            <Link
+              href={"/admin/" + item.label}
               key={item.label}
               className="flex flex-col items-center justify-center gap-1 text-secondaryTextColor hover:text-accentColor"
             >
               <item.icon className="w-5 h-5 " />
-              <span className="text-xs ">{item.label}</span>
-            </button>
+              <span className="text-xs capitalize">{item.label}</span>
+            </Link>
           ))}
         </div>
       </div>

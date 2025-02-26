@@ -3,7 +3,7 @@ import { RootState } from "@/State";
 import { removeToast } from "@/State/toast";
 import { toastType } from "@/utils/types";
 import { CheckCircle2, XCircle } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 function ToastProvider() {
@@ -14,7 +14,7 @@ function ToastProvider() {
   if (toasts.length === 0) return <></>;
 
   return (
-    <article className="h-min z-50 w-full right-0 top-0 flex flex-col gap-2  md:w-96 absolute px-4 py-6">
+    <article className="h-min overflow-hidden z-50 w-full right-0 top-0 flex flex-col gap-2  md:w-96 absolute px-4 py-6">
       {toasts.map((toast) => (
         <Toast toastData={toast} key={toast.timestamp} />
       ))}
@@ -23,16 +23,24 @@ function ToastProvider() {
 }
 const Toast = ({ toastData }: { toastData: toastType }) => {
   const dispatch = useDispatch();
+  const [exit, setExit] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
-      dispatch(removeToast(toastData.timestamp));
-    }, toastData.timestamp + 3000 - Date.now());
-  }, []);
+    const timer = setTimeout(() => {
+      setExit(true); // Start exit animation
+      setTimeout(() => {
+        dispatch(removeToast(toastData.timestamp));
+      }, 500); // Wait for animation to complete before removing
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [dispatch, toastData.timestamp]);
+
   const Icon = {
     success: CheckCircle2,
     error: XCircle,
   }[toastData.status];
+
   const bgColor = {
     success: "bg-green-600",
     error: "bg-red-600",
@@ -41,7 +49,9 @@ const Toast = ({ toastData }: { toastData: toastType }) => {
 
   return (
     <aside
-      className={` text-sm md:text-lg  capitalize py-4 flex items-center gap-3 ${bgColor} text-white px-4 rounded-lg shadow-lg`}
+      className={`toast ${
+        exit ? "slide-out" : "slide-in"
+      } ${bgColor} text-white text-sm md:text-lg capitalize py-4 flex items-center gap-3 px-4 rounded-lg shadow-lg`}
       role="status"
       aria-live="polite"
     >
@@ -50,5 +60,4 @@ const Toast = ({ toastData }: { toastData: toastType }) => {
     </aside>
   );
 };
-
 export default ToastProvider;

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/State";
-import CategorySelectNav from "../../components/TableComponents/CategorySelectNav";
+import CategorySelectNav from "../../../components/TableComponents/CategorySelectNav";
 import BillInfo from "@/components/TableComponents/BilInfo";
 import Image from "next/image";
 
