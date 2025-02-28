@@ -16,7 +16,7 @@ const menuItems = [
 function MobileSidebar() {
   return (
     <>
-      <div className="md:hidden w-full h-16 bg-background border-t border-bordercolor p-4">
+      <div className="md:hidden w-full h-16 bg-background border-t p-4">
         <div className="grid grid-cols-4 h-full">
           {menuItems.map((item) => (
             <Link
