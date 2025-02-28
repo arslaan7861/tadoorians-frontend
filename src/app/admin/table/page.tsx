@@ -1,9 +1,17 @@
 "use client";
 
-import { Utensils } from "lucide-react";
+import { Calculator, Utensils, X } from "lucide-react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "@/State";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function RestaurantTables() {
   const { tables } = useSelector((state: RootState) => state.tables);
@@ -12,24 +20,46 @@ export default function RestaurantTables() {
     <div className="bg-background text-textColor flex flex-col items-center justify-center w-full overflow">
       <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full justify-center items-center p-4">
         {Object.entries(tables).map(([number, data]) => (
-          <Link
-            href={`/admin/${number}`}
-            key={number}
-            className="w-full h-40 flex flex-col items-center justify-center text-textColor font-bold text-lg rounded-lg shadow-lg border border-bordercolor transition-all duration-300  hover:text-accentColor hover:border-accentColor p-4"
-          >
-            <div className="flex flex-col items-center text-2xl font-extrabold mb-2">
-              <span>Table {number}</span>
-            </div>
-            <div className="flex justify-evenly items-center w-full px-2 text-sm">
-              <div className="flex items-center gap-1">
-                <span>₹{data.totalAmount}</span>
-              </div>
-              <div className="flex items-center gap-1">
+          // <Link
+          //   href={`/admin/${number}`}
+          //   key={number}
+          //   className="w-full h-40 flex flex-col items-center justify-center text-textColor font-bold text-lg rounded-lg shadow-lg border border-bordercolor transition-all duration-300  hover:text-accentColor hover:border-accentColor p-4"
+          // >
+          //   <div className="flex flex-col items-center text-2xl font-extrabold mb-2">
+          //     <span>Table {number}</span>
+          //   </div>
+          //   <div className="flex justify-evenly items-center w-full px-2 text-sm">
+          //     <div className="flex items-center gap-1">
+          //       <span>₹{data.totalAmount}</span>
+          //     </div>
+          //     <div className="flex items-center gap-1">
+          //       <Utensils className="w-4 h-4" />
+          //       <span>{data.totalDishes} Dishes</span>
+          //     </div>
+          //   </div>
+          // </Link>
+          <Card className="">
+            <CardHeader className="items-center">
+              <CardTitle>Table{number}</CardTitle>
+            </CardHeader>
+            <CardContent className="flex justify-evenly">
+              <section className="flex items-center gap-1">
+                <span>Bill: ₹{data.totalAmount}</span>
+              </section>
+              <section className="flex items-center gap-1">
                 <Utensils className="w-4 h-4" />
-                <span>{data.totalDishes} Dishes</span>
-              </div>
-            </div>
-          </Link>
+                <span>Dishes: {data.totalDishes} </span>
+              </section>
+            </CardContent>
+            <CardFooter className="justify-evenly">
+              <Button variant={"outline"}>
+                <Calculator />
+              </Button>
+              <Button variant={"detructiveOutline"}>
+                <X />
+              </Button>
+            </CardFooter>
+          </Card>
         ))}
       </section>
     </div>
