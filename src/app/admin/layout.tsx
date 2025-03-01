@@ -4,9 +4,9 @@ import { ReactNode } from "react";
 
 function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <section className="flex flex-1 overflow-hidden flex-col md:flex-row">
+    <section className="flex flex-1 overflow-hidden flex-col md:flex-row bg-">
       <DesktopSidebar />
-      <main className="relative w-full overflow-y-auto overflow-x-hidden p-4 scrollbar-none">
+      <main className="relative w-full min-h-full flex-grow overflow-y-auto overflow-x-hidden scrollbar-none">
         {children}
       </main>
       <MobileSidebar />

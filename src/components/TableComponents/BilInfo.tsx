@@ -5,7 +5,14 @@ import { useDispatch } from "react-redux";
 import { updateTable } from "@/State/Tables";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
 import { AppDispatch } from "@/State";
-import { ArrowRight, LoaderCircle } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowRight,
+  Download,
+  LoaderCircle,
+  Save,
+} from "lucide-react";
+import { Button } from "../ui/button";
 interface propsType {
   table: tableType;
   isUpdated: boolean;
@@ -33,33 +40,30 @@ function BillInfo({ table, isUpdated, setIsupdated }: propsType) {
   };
   return (
     <>
-      <section className="absolute bottom-0 px-6 w-full h-16 flex justify-between items-center border-t border-bordercolor bg-background">
-        <article className="hidden md:block text-lg">
-          Total dishes : {table.totalDishes}
-        </article>
+      <section className="px-6 w-full p-2 h-16 flex justify-between items-center border-t self-end">
+        <span className="hidden md:block text-lg text-muted-foreground">
+          Total dishes : <strong>{table.totalDishes}</strong>
+        </span>
         <article className="flex flex-grow sm:flex-grow-0 gap-5 justify-between items-center text-sm md:text-lg">
           {!isUpdated && (
-            <button
+            <Button
+              variant={"outline"}
               disabled={isUpdated || isUpdating}
               onClick={updateOrder}
-              className=" flex items-center gap-2 text-sm md:text-lg text-accentColor border border-accentColor px-4 py-1 rounded-md"
             >
               <span> Save order</span>
               {isUpdating ? (
                 <LoaderCircle className="animate-spin text-xs" />
               ) : (
-                <ArrowRight className="text-xs" />
+                <Download className="text-xs" />
               )}
-            </button>
+            </Button>
           )}
           <section className="flex ml-auto items-center gap-2">
             <span>Total Bill :</span>
-            <button
-              onClick={() => setIsOpen(true)}
-              className="bg-accentColor h-min text-white px-4 py-1 rounded-md text-lg shadow-lg hover:scale-105 transition-transform"
-            >
+            <Button onClick={() => setIsOpen(true)}>
               ₹{table.totalAmount}
-            </button>
+            </Button>
           </section>
         </article>
       </section>

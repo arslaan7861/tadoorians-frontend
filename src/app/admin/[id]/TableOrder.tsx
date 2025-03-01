@@ -5,6 +5,16 @@ import { RootState } from "@/State";
 import CategorySelectNav from "../../../components/TableComponents/CategorySelectNav";
 import BillInfo from "@/components/TableComponents/BilInfo";
 import Image from "next/image";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { IndianRupee, Minus, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function RestaurantMenu({ tableId }: { tableId: string }) {
   const { tables } = useSelector((state: RootState) => state.tables);
@@ -18,7 +28,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
 
   function increase(
     name: string, // Assuming each order has a unique 'id'
-    size: "quarter" | "half" | "full",
+    size: string,
     quantity: number
   ) {
     setIsupdated(false);
@@ -54,69 +64,83 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
   }
 
   return (
-    <div className="text-textColor flex flex-col items-center w-full max-h-full pt-6 pb-16">
+    <div className="text-textColor min-h-full flex flex-col items-center w-full max-h-full ">
       <CategorySelectNav
         table={table}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full py-2 overflow-y-auto scrollbar-none bg-background">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full overflow-y-auto scrollbar-none p-4 ">
         {table.OrderDetails.filter(
           (item) => item.category === selectedCategory
         ).map((item, index) => (
-          <article
+          <Card
             key={index}
-            className="p-4 border border-bordercolor shadow-sm hover:shadow-xl transition-all flex flex-col items-center rounded-md"
+            className="flex p-0 overflow-clip gap-2 h-32 items-center"
           >
-            <article className="mb-3 w-full h-40 relative">
+            <CardDescription className="w-24  h-full relative">
               <Image
                 src={"/images/placeholder.jpg"}
+                fill={true}
+                className="object-cover"
                 alt={item.name}
-                fill
-                className="w-full rounded-md h-40 object-cover"
-                loading="lazy"
               />
-            </article>
-            <h3 className="text-lg font-semibold mb-2">{item.name}</h3>
-            <div className="grid grid-cols-3 gap-2 w-full">
-              {Object.entries(item.sizes).map(([size, { price, quantity }]) => (
-                <div
-                  key={size}
-                  className="flex flex-col items-center bg-transAccentColor text-accentColor border border-accentColor rounded-lg p-2"
-                >
-                  <p className="text-sm font-medium uppercase">{size}</p>
-                  <p className="font-semibold">₹{price}</p>
-                  <div className="flex items-center gap-2 mt-1 ">
-                    <button
-                      onClick={() =>
-                        increase(
-                          item.name,
-                          size as "quarter" | "half" | "full",
-                          quantity <= 0 ? 0 : quantity - 1
-                        )
-                      }
-                      className="px-2 py-1 "
+            </CardDescription>
+            <section className=" flex-grow h-min flex flex-col p-2 gap-2 items-start">
+              <CardTitle className=" p-0 border-b w-full text-center">
+                {item.name}
+              </CardTitle>
+              <CardContent className="flex flex-grow w-full items-center justify-start gap-2 p-0 text-muted-foreground">
+                <article className="text-sm w-min  flex flex-col gap-1">
+                  {Object.entries(item.sizes).map(
+                    ([size, { price, quantity }]) => (
+                      <span key={size} className="capitalize">
+                        {size}
+                      </span>
+                    )
+                  )}
+                </article>
+                <article className="text-sm w-min  flex flex-col gap-1">
+                  {Object.entries(item.sizes).map(([size, { price }]) => (
+                    <strong key={size}>₹{price}</strong>
+                  ))}
+                </article>
+                <article className="text-sm w-min  flex flex-grow flex-col gap-1">
+                  {Object.entries(item.sizes).map(([size, { quantity }]) => (
+                    <span
+                      key={size}
+                      className="flex items-center w-full justify-evenly"
                     >
-                      -
-                    </button>
-                    <span className="text-lg font-semibold">{quantity}</span>
-                    <button
-                      onClick={() =>
-                        increase(
-                          item.name,
-                          size as "quarter" | "half" | "full",
-                          quantity + 1
-                        )
-                      }
-                      className="px-2 py-1"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </article>
+                      <Button
+                        asChild
+                        size={"icon"}
+                        className="h-6 p-1"
+                        variant={"outline"}
+                        onClick={() => {
+                          if (quantity > 0)
+                            increase(item.name, size, quantity - 1);
+                        }}
+                        disabled={quantity <= 0}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      {quantity}
+                      <Button
+                        asChild
+                        size={"icon"}
+                        className="h-6 p-1"
+                        variant={"outline"}
+                        onClick={() => increase(item.name, size, quantity + 1)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </span>
+                  ))}
+                </article>
+              </CardContent>
+            </section>
+            {/* <CardFooter></CardFooter> */}
+          </Card>
         ))}
       </div>
       <BillInfo

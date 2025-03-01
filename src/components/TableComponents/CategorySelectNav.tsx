@@ -11,7 +11,7 @@ function CategorySelectNav({
   setSelectedCategory,
 }: propsType) {
   return (
-    <nav className="w-full absolute top-0 z-10 bg-background max-w-full text-textColor flex gap-3">
+    <nav className="w-full z-10 bg-background max-w-full text-textColor flex gap-3">
       {[...new Set(table.OrderDetails.map((i) => i.category))].map(
         (category) => (
           <button

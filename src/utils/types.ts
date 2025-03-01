@@ -4,20 +4,13 @@ export interface MenuItem {
   name: string;
   image: string;
   category: string;
-  sizes: {
-    quarter: {
+  sizes: Record<
+    string,
+    {
       price: number;
       quantity: number;
-    };
-    half: {
-      price: number;
-      quantity: number;
-    };
-    full: {
-      price: number;
-      quantity: number;
-    };
-  };
+    }
+  >;
 }
 
 export interface tableType {
