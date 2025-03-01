@@ -5,13 +5,7 @@ import { useDispatch } from "react-redux";
 import { updateTable } from "@/State/Tables";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
 import { AppDispatch } from "@/State";
-import {
-  ArrowDown,
-  ArrowRight,
-  Download,
-  LoaderCircle,
-  Save,
-} from "lucide-react";
+import { Download, LoaderCircle } from "lucide-react";
 import { Button } from "../ui/button";
 interface propsType {
   table: tableType;
