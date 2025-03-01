@@ -91,13 +91,11 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
                 </CardTitle>
                 <CardContent className="flex flex-grow w-full items-center justify-start gap-2 p-0 text-muted-foreground">
                   <article className="text-sm w-min  flex flex-col gap-1">
-                    {Object.entries(item.sizes).map(
-                      ([size, { price, quantity }]) => (
-                        <span key={size} className="capitalize">
-                          {size}
-                        </span>
-                      )
-                    )}
+                    {Object.entries(item.sizes).map(([size]) => (
+                      <span key={size} className="capitalize">
+                        {size}
+                      </span>
+                    ))}
                   </article>
                   <article className="text-sm w-min  flex flex-col gap-1">
                     {Object.entries(item.sizes).map(([size, { price }]) => (

@@ -4,6 +4,7 @@ import { menuData } from "@/utils/menu";
 import { OrdersState, tableType } from "@/utils/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { addToast } from "./toast";
+import { toast } from "sonner";
 
 export const initialState: OrdersState = {
   tables: {
@@ -108,6 +109,7 @@ export const updateTable = createAsyncThunk(
           timestamp: 0,
         })
       );
+      toast("test toast");
     } catch (error) {
       console.log(error);
       return rejectWithValue("Failed to fetch data");

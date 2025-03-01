@@ -1,10 +1,12 @@
 import DesktopSidebar from "@/components/RootComponents/DesktopSidebar";
 import MobileSidebar from "@/components/RootComponents/MobileSidebar";
 import { ReactNode } from "react";
+import { Toaster } from "sonner";
 
 function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <section className="flex flex-1 overflow-hidden flex-col md:flex-row bg-">
+      {/* <Toaster position="top-left" /> */}
       <DesktopSidebar />
       <main className="relative w-full min-h-full flex-grow overflow-y-auto overflow-x-hidden scrollbar-none">
         {children}
