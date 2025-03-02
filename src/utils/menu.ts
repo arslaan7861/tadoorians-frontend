@@ -1,4 +1,4 @@
-import { MenuItem } from "./types";
+import { BillType, MenuItem } from "./types";
 
 export const menuData: MenuItem[] = [
   {
@@ -112,3 +112,12 @@ export const menuData: MenuItem[] = [
     },
   },
 ];
+export const emptyBill: BillType = {
+  billcontent: [],
+  totalAmount: 0,
+  totalDishes: 0,
+  tableId: "0",
+  credited: false,
+  paymentMethod: "cash",
+  discount: 0,
+};

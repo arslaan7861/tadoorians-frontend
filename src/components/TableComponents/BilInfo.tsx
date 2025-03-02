@@ -3,18 +3,10 @@ import RestaurantBillCard from "./Billcard";
 import { tableType } from "@/utils/types";
 import { useDispatch } from "react-redux";
 import { updateTable } from "@/State/Tables";
-import { calculateAmountAndDishes } from "@/utils/tableFunctions";
 import { AppDispatch } from "@/State";
-import { Download, LoaderCircle } from "lucide-react";
+import { Download, LoaderCircle, Printer } from "lucide-react";
 import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 interface propsType {
   table: tableType;
@@ -25,17 +17,9 @@ function BillInfo({ table, isUpdated, setIsupdated }: propsType) {
   const dispatch = useDispatch<AppDispatch>();
   const [isUpdating, setIsUpdating] = useState(false);
   const updateOrder = async () => {
-    const { totalAmount, totalDishes } = calculateAmountAndDishes(table);
     console.log("updating table");
     setIsUpdating(true);
-    await dispatch(
-      updateTable({
-        ...table,
-        totalAmount,
-        totalDishes,
-        lastUpdated: table.lastUpdated + 1,
-      })
-    );
+    await dispatch(updateTable(table));
     setIsUpdating(false);
     setIsupdated(true);
     console.log("updated");
@@ -50,7 +34,7 @@ function BillInfo({ table, isUpdated, setIsupdated }: propsType) {
           {!isUpdated && (
             <Button
               variant={"secondary"}
-              disabled={isUpdated || isUpdating}
+              disabled={isUpdating}
               onClick={updateOrder}
             >
               {isUpdating ? (
@@ -67,10 +51,28 @@ function BillInfo({ table, isUpdated, setIsupdated }: propsType) {
             </Button>
           )}
           <Dialog>
-            <span className="text-muted-foreground">Total Bill :</span>
-            <DialogTrigger asChild>
-              <Button>₹{table.totalAmount}</Button>
-            </DialogTrigger>
+            <span className="flex-grow flex justify-end">
+              <DialogTrigger asChild>
+                <Button
+                  onClick={() => {
+                    if (!isUpdated) updateOrder();
+                  }}
+                  disabled={isUpdating}
+                >
+                  {isUpdating ? (
+                    <>
+                      {" "}
+                      <LoaderCircle className="animate-spin text-xs" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Printer className="text-xs" /> Print Bill
+                    </>
+                  )}
+                </Button>
+              </DialogTrigger>
+            </span>
             <RestaurantBillCard table={table} />
           </Dialog>
         </article>

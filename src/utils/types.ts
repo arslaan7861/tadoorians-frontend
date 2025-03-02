@@ -12,6 +12,21 @@ export interface MenuItem {
     }
   >;
 }
+export interface BillContentType {
+  name: string;
+  quantity: number;
+  cost: number;
+  size: string;
+}
+export interface BillType {
+  totalAmount: number;
+  totalDishes: number;
+  tableId: string;
+  paymentMethod: "cash" | "upi";
+  credited: boolean;
+  billcontent: BillContentType[];
+  discount: number;
+}
 
 export interface tableType {
   tableId: string;

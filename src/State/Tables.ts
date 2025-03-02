@@ -1,9 +1,11 @@
 import { getTablesData } from "@/Server-actions/getData";
 import { UpdateServerTable } from "@/Server-actions/updateOrders";
-import { menuData } from "@/utils/menu";
+import { emptyBill, menuData } from "@/utils/menu";
 import { OrdersState, tableType } from "@/utils/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { addToast } from "./toast";
+import { calculateAmountAndDishes } from "@/utils/tableFunctions";
+import { updateBill } from "./bill";
 
 export const initialState: OrdersState = {
   tables: {
@@ -95,11 +97,20 @@ export const updateTable = createAsyncThunk(
   "tableOrders/updateTable",
   async (table: tableType, { rejectWithValue, dispatch }) => {
     try {
-      const status = await UpdateServerTable(table);
+      const { totalAmount, totalDishes, bill } =
+        calculateAmountAndDishes(table);
+
+      const status = await UpdateServerTable({
+        ...table,
+        totalAmount,
+        totalDishes,
+        lastUpdated: Date.now(),
+      });
       if (status.ok) {
         console.log("updated table on server");
       }
       dispatch(updateTableState(table));
+      dispatch(updateBill(bill));
       console.log("updated table state");
       dispatch(
         addToast({

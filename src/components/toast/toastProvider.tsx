@@ -51,7 +51,7 @@ const Toast = ({ toastData }: { toastData: toastType }) => {
     <aside
       className={`toast ${
         exit ? "slide-out" : "slide-in"
-      } ${bgColor} text-white text-sm md:text-lg capitalize py-4 flex items-center gap-3 px-4 rounded-lg shadow-lg`}
+      } ${bgColor} text-white text-sm md:text-lg capitalize py-4 flex items-center gap-3 px-4 rounded-lg shadow-lg z-[10000]`}
       role="status"
       aria-live="polite"
     >

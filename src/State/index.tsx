@@ -2,6 +2,7 @@
 import React from "react";
 import toastReducer from "@/State/toast";
 import tableReducer from "@/State/Tables";
+import billReducer from "@/State/bill";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 
@@ -9,6 +10,7 @@ export const store = configureStore({
   reducer: {
     tables: tableReducer,
     toast: toastReducer,
+    bill: billReducer,
   },
 });
 
