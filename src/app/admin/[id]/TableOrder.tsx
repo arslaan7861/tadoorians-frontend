@@ -4,13 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/State";
 import CategorySelectNav from "../../../components/TableComponents/CategorySelectNav";
 import BillInfo from "@/components/TableComponents/BilInfo";
-import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -68,80 +62,64 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
-      <section className="w-full flex-grow">
+      <section className="w-full flex-grow overflow-y-auto md:scrollbar-none">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full overflow-y-auto scrollbar-none p-4 ">
           {table.OrderDetails.filter(
             (item) => item.category === selectedCategory
           ).map((item, index) => (
-            <Card
-              key={index}
-              className="flex p-0 overflow-clip gap-2 h-32 items-center"
-            >
-              <CardDescription className="w-24  h-full relative">
-                <Image
-                  src={"/images/placeholder.jpg"}
-                  fill={true}
-                  className="object-cover"
-                  alt={item.name}
-                />
-              </CardDescription>
-              <section className=" flex-grow h-min flex flex-col p-2 gap-2 items-start">
-                <CardTitle className=" p-0 border-b w-full text-center">
+            <Card key={index} className="pt-2">
+              <CardHeader className="p-2">
+                <CardTitle className=" p-0 w-full text-center">
                   {item.name}
                 </CardTitle>
-                <CardContent className="flex flex-grow w-full items-center justify-start gap-2 p-0 text-muted-foreground">
-                  <article className="text-sm w-min  flex flex-col gap-1">
-                    {Object.entries(item.sizes).map(([size]) => (
-                      <span key={size} className="capitalize">
-                        {size}
-                      </span>
-                    ))}
-                  </article>
-                  <article className="text-sm w-min  flex flex-col gap-1">
-                    {Object.entries(item.sizes).map(([size, { price }]) => (
-                      <strong key={size}>₹{price}</strong>
-                    ))}
-                  </article>
-                  <article className="text-sm w-min  flex flex-grow flex-col gap-1">
-                    {Object.entries(item.sizes).map(([size, { quantity }]) => (
-                      <span
-                        key={size}
-                        className="flex items-center w-full justify-evenly"
+              </CardHeader>
+              <CardContent className="flex flex-grow w-full items-center gap-6 pb-2 text-muted-foreground">
+                <article className="text-sm w-min  flex flex-col gap-1">
+                  {Object.entries(item.sizes).map(([size]) => (
+                    <span key={size} className="capitalize">
+                      {size}
+                    </span>
+                  ))}
+                </article>
+                <article className="text-sm w-min  flex flex-col gap-1">
+                  {Object.entries(item.sizes).map(([size, { price }]) => (
+                    <strong key={size}>₹{price}</strong>
+                  ))}
+                </article>
+                <article className="text-sm w-min  flex flex-grow flex-col items-center gap-1">
+                  {Object.entries(item.sizes).map(([size, { quantity }]) => (
+                    <span key={size} className="flex items-center w-full">
+                      <Button
+                        asChild
+                        size={"icon"}
+                        className="h-6 p-1"
+                        variant={"ghost"}
+                        onClick={() => {
+                          if (quantity > 0)
+                            increase(item.name, size, quantity - 1);
+                        }}
+                        disabled={quantity <= 0}
                       >
-                        <Button
-                          asChild
-                          size={"icon"}
-                          className="h-6 p-1"
-                          variant={"outline"}
-                          onClick={() => {
-                            if (quantity > 0)
-                              increase(item.name, size, quantity - 1);
-                          }}
-                          disabled={quantity <= 0}
-                        >
-                          <Minus className="h-4 w-4" />
-                        </Button>
-                        {quantity}
-                        <Button
-                          asChild
-                          size={"icon"}
-                          className="h-6 p-1"
-                          variant={"outline"}
-                          onClick={() =>
-                            increase(item.name, size, quantity + 1)
-                          }
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                      </span>
-                    ))}
-                  </article>
-                </CardContent>
-              </section>
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="flex-grow text-center"> {quantity}</span>
+                      <Button
+                        asChild
+                        size={"icon"}
+                        className="h-6 p-1"
+                        variant={"ghost"}
+                        onClick={() => increase(item.name, size, quantity + 1)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </span>
+                  ))}
+                </article>
+              </CardContent>
               {/* <CardFooter></CardFooter> */}
             </Card>
           ))}
-        </div>{" "}
+        </div>
       </section>
       <BillInfo
         isUpdated={isUpdated}
