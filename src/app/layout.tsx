@@ -5,14 +5,14 @@ import Titlebar from "@/components/RootComponents/Titlebar";
 import { ThemeProvider } from "@/components/theme/provider";
 import StateProvider from "@/State";
 import { Analytics } from "@vercel/analytics/react";
-import { getTheme } from "@/Server-actions/getTheme";
+import { getThemeCookie } from "@/Server-actions/getTheme";
 
 interface RootLayoutProps {
   children: ReactNode;
 }
 
 export default async function RootLayout({ children }: RootLayoutProps) {
-  const userTheme = await getTheme();
+  const userTheme = (await getThemeCookie()) || "light";
   return (
     <StateProvider>
       <ThemeProvider userTheme={userTheme}>

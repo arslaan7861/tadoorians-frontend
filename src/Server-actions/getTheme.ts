@@ -1,26 +1,17 @@
 "use server";
-import { cookies } from "next/headers";
+
 import { themeType } from "@/utils/types";
+import { cookies } from "next/headers";
 
-export async function getTheme(): Promise<themeType> {
-  "use server";
-  const cookieStore = await cookies();
-  let theme = cookieStore.get("theme")?.value as themeType;
+const THEME_KEY = "theme";
 
-  if (!theme) {
-    theme = "light"; // Default theme
-    await saveTheme(theme); // Persist the default theme
-  }
-
-  return theme;
-}
-
-export async function saveTheme(theme: themeType) {
-  "use server";
-  const cookieStore = await cookies();
-  cookieStore.set("theme", theme, {
+export const setThemeCookie = async (theme: string) => {
+  (await cookies()).set(THEME_KEY, theme, {
     path: "/",
-    maxAge: 60 * 60 * 24 * 365, // 1 year
-    sameSite: "lax",
+    maxAge: 365 * 24 * 60 * 60,
   });
-}
+};
+
+export const getThemeCookie = async (): Promise<themeType | null> => {
+  return ((await cookies()).get(THEME_KEY)?.value as themeType) || null;
+};

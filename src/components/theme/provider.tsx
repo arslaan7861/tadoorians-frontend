@@ -11,7 +11,7 @@ import {
 
 import { Toaster } from "@/components/ui/sonner";
 import { themeType } from "@/utils/types";
-import { saveTheme } from "@/Server-actions/getTheme";
+import { setThemeCookie } from "@/Server-actions/getTheme";
 interface ThemeContextType {
   theme: themeType;
   toggleTheme: () => void;
@@ -31,7 +31,7 @@ export const ThemeProvider = ({
   const doc = useRef<HTMLHtmlElement>(null);
   const [theme, setTheme] = useState<themeType>(userTheme);
   useEffect(() => {
-    saveTheme(theme);
+    setThemeCookie(theme);
     // document.cookie = `theme=${theme}; path=/; max-age=${60 * 60 * 24 * 365}`;
   }, [theme]);
 
