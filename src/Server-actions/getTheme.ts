@@ -2,16 +2,25 @@
 import { cookies } from "next/headers";
 import { themeType } from "@/utils/types";
 
-export async function getTheme() {
+export async function getTheme(): Promise<themeType> {
+  "user server";
   const cookieStore = await cookies();
-  const theme = cookieStore.get("theme");
-  if (!theme) cookieStore.set("theme", "light");
-  console.log({ theme });
-  return theme?.value as themeType;
+  let theme = cookieStore.get("theme")?.value as themeType;
+
+  if (!theme) {
+    theme = "light"; // Default theme
+    await saveTheme(theme); // Persist the default theme
+  }
+
+  return theme;
 }
-export async function saveTheme(theme: string) {
-  console.log("saving theme");
+
+export async function saveTheme(theme: themeType) {
+  "use server";
   const cookieStore = await cookies();
-  cookieStore.set("theme", theme);
-  console.log(theme);
+  cookieStore.set("theme", theme, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365, // 1 year
+    sameSite: "lax",
+  });
 }
