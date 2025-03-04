@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { themeType } from "@/utils/types";
 
 export async function getTheme(): Promise<themeType> {
-  "user server";
+  "use server";
   const cookieStore = await cookies();
   let theme = cookieStore.get("theme")?.value as themeType;
 
