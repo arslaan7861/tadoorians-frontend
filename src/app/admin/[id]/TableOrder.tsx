@@ -67,13 +67,13 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
           {table.OrderDetails.filter(
             (item) => item.category === selectedCategory
           ).map((item, index) => (
-            <Card key={index} className="pt-2">
+            <Card key={index} className="pt-2 hover:border-ring">
               <CardHeader className="p-2">
                 <CardTitle className=" p-0 w-full text-center">
                   {item.name}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-grow w-full items-center gap-6 pb-2 text-muted-foreground">
+              <CardContent className="flex flex-grow w-full items-center gap-6 pb-2 ">
                 <article className="text-sm w-min  flex flex-col gap-1">
                   {Object.entries(item.sizes).map(([size]) => (
                     <span key={size} className="capitalize">
