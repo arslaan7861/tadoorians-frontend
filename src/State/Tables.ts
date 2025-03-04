@@ -1,11 +1,11 @@
 import { getTablesData } from "@/Server-actions/getData";
 import { UpdateServerTable } from "@/Server-actions/updateOrders";
-import { emptyBill, menuData } from "@/utils/menu";
+import { menuData } from "@/utils/menu";
 import { OrdersState, tableType } from "@/utils/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { addToast } from "./toast";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
 import { updateBill } from "./bill";
+import { toast } from "sonner";
 
 export const initialState: OrdersState = {
   tables: {
@@ -112,13 +112,7 @@ export const updateTable = createAsyncThunk(
       dispatch(updateTableState(table));
       dispatch(updateBill(bill));
       console.log("updated table state");
-      dispatch(
-        addToast({
-          message: "Saved orders succecfully!",
-          status: "success",
-          timestamp: 0,
-        })
-      );
+      toast.success("Saved orders succecfully!");
     } catch (error) {
       console.log(error);
       return rejectWithValue("Failed to fetch data");

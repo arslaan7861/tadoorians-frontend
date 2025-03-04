@@ -120,4 +120,5 @@ export const emptyBill: BillType = {
   credited: false,
   paymentMethod: "cash",
   discount: 0,
+  customerName: "",
 };

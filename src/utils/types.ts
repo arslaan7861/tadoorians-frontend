@@ -26,6 +26,7 @@ export interface BillType {
   credited: boolean;
   billcontent: BillContentType[];
   discount: number;
+  customerName: string;
 }
 
 export interface tableType {

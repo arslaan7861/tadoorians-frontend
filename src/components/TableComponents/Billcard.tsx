@@ -10,10 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-interface PaymentState {
-  credited: boolean;
-  paymentMethod: "cash" | "upi";
-}
+import { Input } from "@/components/ui/input";
+
 import {
   DialogContent,
   DialogFooter,
@@ -28,6 +26,13 @@ import { AppDispatch, RootState } from "@/State";
 import PrintSection from "./PrintSection";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
 import { updateBill } from "@/State/bill";
+import { toast } from "sonner";
+interface PaymentState {
+  credited: boolean;
+  paymentMethod: "cash" | "upi";
+  discount: number;
+  customerName: string;
+}
 
 function Billcard({ table }: { table: tableType }) {
   const bill = useSelector((state: RootState) => state.bill);
@@ -36,12 +41,16 @@ function Billcard({ table }: { table: tableType }) {
   const [values, setValues] = useState<PaymentState>({
     credited: false,
     paymentMethod: "cash",
+    discount: 0,
+    customerName: "",
   });
   useEffect(() => {
     const { bill } = calculateAmountAndDishes(table);
     dispatch(updateBill(bill));
   }, [dispatch, table]);
   async function handlePrint() {
+    if (!values.customerName)
+      return toast.error("Enter customer name", { position: "top-center" });
     //save bill on server
     //print bill
     printBill();
@@ -81,7 +90,14 @@ function Billcard({ table }: { table: tableType }) {
         <p>Total</p>
         <p className="text-card-foreground">{bill.totalAmount}</p>
       </article>{" "}
-      <article className="flex justify-end px-3 items-center space-x-2">
+      <article className="flex justify-end gap-5 px-3 items-center space-x-2">
+        <Input
+          value={values.customerName}
+          onChange={(e) =>
+            setValues({ ...values, customerName: e.target.value })
+          }
+          placeholder="Customer name..."
+        />
         <Checkbox
           id="credited"
           checked={values.credited}
@@ -94,8 +110,7 @@ function Billcard({ table }: { table: tableType }) {
       <PrintSection
         bill={{
           ...bill,
-          credited: values.credited,
-          paymentMethod: values.paymentMethod,
+          ...values,
         }}
         billRef={billRef}
       />
@@ -117,8 +132,9 @@ function Billcard({ table }: { table: tableType }) {
         </Select>
         <Select
           defaultValue={"0"}
+          value={`${values.discount}`}
           onValueChange={(value: string) =>
-            setValues({ ...values, paymentMethod: value as "cash" | "upi" })
+            setValues({ ...values, discount: Number(value) })
           }
         >
           <SelectTrigger className=" w-32 text-sm">

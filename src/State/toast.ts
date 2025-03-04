@@ -13,10 +13,6 @@ const toastSlice = createSlice({
       state.push({ ...payload, timestamp: Date.now() }); // Add the new toast
     },
     removeToast: (state, { payload }: PayloadAction<number>) => {
-      //   console.log("removed toast");
-      //   console.log(state[0]);
-      //   console.log({ payload });
-
       return state.filter((t) => {
         console.log(t.timestamp !== payload);
         return t.timestamp !== payload;

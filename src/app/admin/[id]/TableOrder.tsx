@@ -62,7 +62,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
-      <section className="w-full flex-grow overflow-y-auto md:scrollbar-none">
+      <section className="w-full flex-grow overflow-y-auto sm:scrollbar-none">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full overflow-y-auto scrollbar-none p-4 ">
           {table.OrderDetails.filter(
             (item) => item.category === selectedCategory

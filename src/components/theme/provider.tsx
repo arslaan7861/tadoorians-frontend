@@ -10,24 +10,26 @@ import {
   useEffect,
 } from "react";
 import { useDispatch } from "react-redux";
+import { Toaster } from "@/components/ui/sonner";
 interface ThemeContextType {
-  theme: string;
+  theme: themeType;
   toggleTheme: () => void;
 }
 const ThemeContext = createContext<ThemeContextType>({
   theme: "light",
   toggleTheme: () => {},
 });
+type themeType = "light" | "dark" | "system";
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch<AppDispatch>();
   const doc = useRef<HTMLHtmlElement>(null);
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState<themeType>("light");
   useEffect(() => {
-    const storedTheme = localStorage.getItem("theme") || "light";
+    const storedTheme = (localStorage.getItem("theme") || "light") as themeType;
     setTheme(storedTheme);
     dispatch(getData());
-  }, []);
+  }, [dispatch]);
   useEffect(() => {
     localStorage.setItem("theme", theme);
   }, [theme]);
@@ -41,7 +43,14 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       <html ref={doc} className={theme}>
-        <body className={`bg-background`}>{children}</body>
+        <body className={`bg-background`}>
+          <Toaster
+            className="bg-card text-card-foreground"
+            theme={theme}
+            position="top-right"
+          />
+          {children}
+        </body>
       </html>
     </ThemeContext.Provider>
   );
