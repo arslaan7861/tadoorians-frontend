@@ -67,8 +67,8 @@ function Billcard({ table }: { table: tableType }) {
         </DialogTitle>
       </DialogHeader>
       <article className="flex justify-between text-muted-foreground bg-card px-3 z-10">
-        <p>Items</p>
-        <p>price</p>
+        <span>Items</span>
+        <span>price</span>
       </article>
       <section className="max-h-80 sm:max-h-72 overflow-y-auto relative scrollbar-thin p-3">
         <Table>
@@ -87,8 +87,8 @@ function Billcard({ table }: { table: tableType }) {
         </Table>
       </section>
       <article className="flex justify-between text-muted-foreground bg-card px-3 z-10">
-        <p>Total</p>
-        <p className="text-card-foreground">{bill.totalAmount}</p>
+        <span>Total</span>
+        <span className="text-card-foreground">{bill.totalAmount}</span>
       </article>{" "}
       <article className="flex justify-end gap-5 px-3 items-center space-x-2">
         <Input

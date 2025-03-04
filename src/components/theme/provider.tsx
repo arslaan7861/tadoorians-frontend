@@ -1,6 +1,5 @@
 "use client";
-import { AppDispatch } from "@/State";
-import { getData } from "@/State/Tables";
+
 import {
   createContext,
   useContext,
@@ -9,8 +8,10 @@ import {
   useRef,
   useEffect,
 } from "react";
-import { useDispatch } from "react-redux";
+
 import { Toaster } from "@/components/ui/sonner";
+import { themeType } from "@/utils/types";
+import { saveTheme } from "@/Server-actions/getTheme";
 interface ThemeContextType {
   theme: themeType;
   toggleTheme: () => void;
@@ -19,24 +20,24 @@ const ThemeContext = createContext<ThemeContextType>({
   theme: "light",
   toggleTheme: () => {},
 });
-type themeType = "light" | "dark" | "system";
 
-export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const dispatch = useDispatch<AppDispatch>();
+export const ThemeProvider = ({
+  children,
+  userTheme,
+}: {
+  children: ReactNode;
+  userTheme: themeType;
+}) => {
   const doc = useRef<HTMLHtmlElement>(null);
-  const [theme, setTheme] = useState<themeType>("light");
+  const [theme, setTheme] = useState<themeType>(userTheme);
   useEffect(() => {
-    const storedTheme = (localStorage.getItem("theme") || "light") as themeType;
-    setTheme(storedTheme);
-    dispatch(getData());
-  }, [dispatch]);
-  useEffect(() => {
-    localStorage.setItem("theme", theme);
+    saveTheme(theme);
   }, [theme]);
 
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
+    console.log(doc.current);
   };
 
   return (

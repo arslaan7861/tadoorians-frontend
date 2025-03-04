@@ -1,20 +1,21 @@
 // app/layout.tsx
 import { ReactNode } from "react";
-
 import "./globals.css";
 import Titlebar from "@/components/RootComponents/Titlebar";
 import { ThemeProvider } from "@/components/theme/provider";
 import StateProvider from "@/State";
 import { Analytics } from "@vercel/analytics/react";
+import { getTheme } from "@/Server-actions/getTheme";
 
 interface RootLayoutProps {
   children: ReactNode;
 }
 
 export default async function RootLayout({ children }: RootLayoutProps) {
+  const userTheme = await getTheme();
   return (
     <StateProvider>
-      <ThemeProvider>
+      <ThemeProvider userTheme={userTheme}>
         <div className="flex flex-col h-svh">
           {/* <ToastProvider /> */}
           <Analytics />

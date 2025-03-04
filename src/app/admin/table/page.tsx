@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/button";
 
 export default function RestaurantTables() {
   const { tables } = useSelector((state: RootState) => state.tables);
-
   return (
     <div className="bg-background text-textColor flex flex-col items-center justify-center w-full overflow">
       <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full justify-center items-center p-4">

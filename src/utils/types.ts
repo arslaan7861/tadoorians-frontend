@@ -1,5 +1,5 @@
 import { Document } from "mongoose";
-
+export type themeType = "light" | "dark" | "system";
 export interface MenuItem {
   name: string;
   image: string;
