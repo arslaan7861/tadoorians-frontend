@@ -10,23 +10,8 @@ export async function getThemeCookie() {
 export async function setThemeCookie(theme: string) {
   console.log("saving theme");
   const cookieStore = await cookies();
-  cookieStore.set("theme", theme);
+  cookieStore.set("theme", theme, {
+    maxAge: 1000 * 60 * 60 * 24 * 365,
+  });
   console.log(theme);
 }
-// "use server";
-
-// import { themeType } from "@/utils/types";
-// import { cookies } from "next/headers";
-
-// const THEME_KEY = "theme";
-
-// export const setThemeCookie = async (theme: string) => {
-//   (await cookies()).set(THEME_KEY, theme, {
-//     path: "/",
-//     maxAge: 365 * 24 * 60 * 60,
-//   });
-// };
-
-// export const getThemeCookie = async (): Promise<themeType | null> => {
-//   return ((await cookies()).get(THEME_KEY)?.value as themeType) || null;
-// };
