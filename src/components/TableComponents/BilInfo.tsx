@@ -26,20 +26,19 @@ function BillInfo({ table, isUpdated, setIsupdated }: propsType) {
   };
   return (
     <>
-      <section className="px-6 w-full p-2 h-16 flex justify-between items-center border-t self-end">
+      <section className="px-6 w-full p-2 h-16 fixed right-2 bottom-[70px] sm:static flex justify-end sm:justify-between items-center border-t self-end">
         <span className="hidden md:block text-lg text-muted-foreground">
           Total dishes : <strong>{table.totalDishes}</strong>
         </span>
-        <article className="flex flex-grow sm:flex-grow-0 gap-5 justify-between items-center text-sm md:text-lg">
-          {!isUpdated && (
+        <article className="block sm:flex sm:flex-grow-0 gap-5 justify-between items-center text-sm md:text-lg">
+          {!isUpdated ? (
             <Button
-              variant={"secondary"}
               disabled={isUpdating}
               onClick={updateOrder}
+              className="hover:bg-primary disabled:opacity-90"
             >
               {isUpdating ? (
                 <>
-                  {" "}
                   <LoaderCircle className="animate-spin text-xs" />
                   <span>Saving...</span>
                 </>
@@ -49,32 +48,18 @@ function BillInfo({ table, isUpdated, setIsupdated }: propsType) {
                 </>
               )}
             </Button>
+          ) : (
+            <Dialog>
+              <span className="flex-grow flex justify-end">
+                <DialogTrigger asChild>
+                  <Button>
+                    <Printer className="text-xs" /> Print Bill
+                  </Button>
+                </DialogTrigger>
+              </span>
+              <RestaurantBillCard table={table} />
+            </Dialog>
           )}
-          <Dialog>
-            <span className="flex-grow flex justify-end">
-              <DialogTrigger asChild>
-                <Button
-                  onClick={() => {
-                    if (!isUpdated) updateOrder();
-                  }}
-                  disabled={isUpdating}
-                >
-                  {isUpdating ? (
-                    <>
-                      {" "}
-                      <LoaderCircle className="animate-spin text-xs" />
-                      <span>Saving...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Printer className="text-xs" /> Print Bill
-                    </>
-                  )}
-                </Button>
-              </DialogTrigger>
-            </span>
-            <RestaurantBillCard table={table} />
-          </Dialog>
         </article>
       </section>
       {/* Bill card  */}
