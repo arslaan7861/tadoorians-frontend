@@ -79,12 +79,7 @@ function EditAddform() {
       name: "",
       image: "",
       category: "",
-      sizes: {
-        Regular: {
-          price: 0,
-          quantity: 0,
-        },
-      },
+      sizes: {},
     },
   });
 
