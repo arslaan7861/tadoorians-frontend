@@ -26,7 +26,7 @@ function BillInfo({ table, isUpdated, setIsupdated }: propsType) {
   };
   return (
     <>
-      <section className="px-6 w-full p-2 h-16 fixed right-2 bottom-[70px] sm:static flex justify-end sm:justify-between items-center border-t self-end">
+      <section className="px-6 w-full p-2 h-16 fixed right-2 bottom-[70px] sm:static flex justify-end sm:justify-between items-center md:border-t md:bg-background self-end">
         <span className="hidden md:block text-lg text-muted-foreground">
           Total dishes : <strong>{table.totalDishes}</strong>
         </span>

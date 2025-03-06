@@ -46,7 +46,7 @@ export const ThemeProvider = ({
       <html ref={doc} className={theme}>
         <body className={`bg-background`}>
           <Toaster
-            className="bg-card text-card-foreground"
+            className="bg-card text-card-foreground z-[1000000]"
             theme={theme}
             position="top-right"
           />

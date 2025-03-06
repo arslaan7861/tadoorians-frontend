@@ -1,18 +1,18 @@
-import { tableType } from "@/utils/types";
-import mongoose, { Schema } from "mongoose";
+import { ITable } from "@/utils/types";
+import mongoose, { Schema, Model } from "mongoose";
 import { DishSchema } from "./MenuModel";
 
-// Define the Mongoose Schema
-const TableSchema: Schema = new Schema({
+// Define the Mongoose Schema with generic type ITable
+const TableSchema: Schema<ITable> = new Schema({
   tableId: { type: String, unique: true },
   totalAmount: { type: Number, default: 0 },
   totalDishes: { type: Number, default: 0 },
   OrderDetails: [DishSchema],
   lastUpdated: { type: Number, default: 0 },
 });
-interface TableSchemaType extends Document, tableType {}
-// Export the model
-const TableModel =
-  mongoose.models.Table ||
-  mongoose.model<TableSchemaType>("Table", TableSchema);
+
+// Create and export the model with proper typings
+const TableModel: Model<ITable> =
+  mongoose.models.Table || mongoose.model<ITable>("Table", TableSchema);
+
 export default TableModel;

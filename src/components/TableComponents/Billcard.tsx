@@ -96,6 +96,7 @@ function Billcard({ table }: { table: tableType }) {
           onChange={(e) =>
             setValues({ ...values, customerName: e.target.value })
           }
+          autoFocus={false}
           placeholder="Customer name..."
         />
         <Checkbox

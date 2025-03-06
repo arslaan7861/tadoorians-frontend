@@ -7,21 +7,26 @@ import BillInfo from "@/components/TableComponents/BilInfo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { tableType } from "@/utils/types";
 
 export default function RestaurantMenu({ tableId }: { tableId: string }) {
   const { tables } = useSelector((state: RootState) => state.tables);
+  const tablesLenValid = Object.entries(tables).length > 0;
   const [selectedCategory, setSelectedCategory] = useState<string>("Starter");
-  const [table, setTable] = useState(tables[tableId]);
+  const [table, setTable] = useState(
+    tablesLenValid ? tables[tableId] : ({} as tableType)
+  );
   const [isUpdated, setIsupdated] = useState(true);
   useEffect(() => {
     console.log("setting tables");
-    setTable(tables[tableId]);
+    setTable(tablesLenValid ? tables[tableId] : ({} as tableType));
   }, [tables, tableId]);
 
   function increase(
     name: string, // Assuming each order has a unique 'id'
     size: string,
-    quantity: number
+    quantity: number,
+    count: boolean
   ) {
     setIsupdated(false);
     setTable((oldState) => {
@@ -29,7 +34,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
       newState.OrderDetails = oldState.OrderDetails.map((order) => {
         if (order.name === name) {
           // Adjust totalDishes by removing the previous quantity first
-          newState.totalDishes -= order.sizes[size].quantity;
+          if (count) newState.totalDishes -= order.sizes[size].quantity;
 
           // Update the order with the new quantity
           const updatedOrder = {
@@ -44,7 +49,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
           };
 
           // Adjust totalDishes with the new quantity
-          newState.totalDishes += quantity;
+          if (count) newState.totalDishes += quantity;
 
           return updatedOrder;
         }
@@ -55,6 +60,8 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
     });
   }
 
+  if (!tablesLenValid || !table.OrderDetails) return <></>;
+
   return (
     <div className="text-textColor min-h-full flex flex-col items-center w-full max-h-full ">
       <CategorySelectNav
@@ -63,7 +70,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
         setSelectedCategory={setSelectedCategory}
       />
       <section className="w-full flex-grow overflow-y-auto sm:scrollbar-none">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full overflow-y-auto scrollbar-none p-4 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full overflow-y-auto md:scrollbar-none p-4 ">
           {table.OrderDetails.filter(
             (item) => item.category === selectedCategory
           ).map((item, index) => (
@@ -96,7 +103,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
                         variant={"ghost"}
                         onClick={() => {
                           if (quantity > 0)
-                            increase(item.name, size, quantity - 1);
+                            increase(item.name, size, quantity - 1, item.count);
                         }}
                         disabled={quantity <= 0}
                       >
@@ -108,7 +115,9 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
                         size={"icon"}
                         className="h-6 p-1"
                         variant={"ghost"}
-                        onClick={() => increase(item.name, size, quantity + 1)}
+                        onClick={() =>
+                          increase(item.name, size, quantity + 1, item.count)
+                        }
                       >
                         <Plus className="h-4 w-4" />
                       </Button>

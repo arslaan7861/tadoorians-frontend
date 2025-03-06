@@ -2,8 +2,8 @@
 
 import { Calculator, Utensils, X } from "lucide-react";
 import Link from "next/link";
-import { useSelector } from "react-redux";
-import { RootState } from "@/State";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/State";
 import {
   Card,
   CardContent,
@@ -12,9 +12,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { EmptyTable } from "@/State/Tables";
+import { Dialog } from "@radix-ui/react-dialog";
+import { DialogTrigger } from "@/components/ui/dialog";
+import Billcard from "@/components/TableComponents/Billcard";
+import { calculateAmountAndDishes } from "@/utils/tableFunctions";
+import { updateBill } from "@/State/bill";
 
 export default function RestaurantTables() {
   const { tables } = useSelector((state: RootState) => state.tables);
+  const dispatch = useDispatch<AppDispatch>();
+  if (Object.entries(tables).length == 0) return <></>;
+
   return (
     <div className="bg-background text-textColor flex flex-col items-center justify-center w-full overflow">
       <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full justify-center items-center p-4">
@@ -52,18 +61,28 @@ export default function RestaurantTables() {
             <CardFooter className="justify-evenly gap-2">
               <Button
                 className="z-20"
+                // disabled={data.totalAmount == 0 && data.totalDishes == 0}
                 variant="detructiveOutline"
-                onClick={() => console.log("Close action triggered")}
+                onClick={() => dispatch(EmptyTable(number))}
               >
                 <X />
               </Button>
-              <Button
-                className="z-20"
-                variant="outline"
-                onClick={() => console.log("Calculator action triggered")}
-              >
-                <Calculator />
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    className="z-20"
+                    variant="outline"
+                    disabled={data.totalAmount == 0}
+                    onClick={() => {
+                      const { bill } = calculateAmountAndDishes(data);
+                      dispatch(updateBill(bill));
+                    }}
+                  >
+                    <Calculator />
+                  </Button>
+                </DialogTrigger>
+                <Billcard table={data} />
+              </Dialog>
             </CardFooter>
           </Card>
         ))}

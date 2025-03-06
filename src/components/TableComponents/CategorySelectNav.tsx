@@ -1,5 +1,13 @@
 import { tableType } from "@/utils/types";
 import React, { SetStateAction } from "react";
+import { Button } from "../ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
+import { ChevronDown } from "lucide-react";
 interface propsType {
   table: tableType;
   selectedCategory: string;
@@ -10,24 +18,76 @@ function CategorySelectNav({
   selectedCategory,
   setSelectedCategory,
 }: propsType) {
+  const categories = [...new Set(table.OrderDetails.map((i) => i.category))];
   return (
-    <nav className="w-full z-10 bg-background max-w-full text-textColor flex gap-3">
-      {[...new Set(table.OrderDetails.map((i) => i.category))].map(
-        (category) => (
-          <button
+    <>
+      <nav className="hidden md:flex w-full z-10 bg-background max-w-full text-textColor gap-3">
+        {categories.map((category) => (
+          <Button
+            variant={"ghost"}
             key={category}
-            className={`px-4 py-2 text-sm font-medium transition-all h-full border-b-2 ${
+            className={`hover:bg-card rounded-none ${
               selectedCategory === category
-                ? "border-accentColor text-accentColor"
+                ? "border-primary text-primary border-b"
                 : "border-transparent"
             }`}
             onClick={() => setSelectedCategory(category)}
           >
             {category}
-          </button>
-        )
-      )}
-    </nav>
+          </Button>
+        ))}
+      </nav>
+      <nav className="md:hidden flex w-full z-10 bg-background justify-evenly items-center max-w-full text-textColor gap-3">
+        {[...categories].splice(0, 3).map((category) => (
+          <Button
+            variant={"ghost"}
+            key={category}
+            className={`hover:bg-card rounded-none ${
+              selectedCategory === category
+                ? "border-primary text-primary border-b"
+                : "border-transparent"
+            }`}
+            onClick={() => setSelectedCategory(category)}
+          >
+            {category}
+          </Button>
+        ))}
+        <DropdownMenu>
+          <DropdownMenuTrigger className="border-none" asChild>
+            <Button
+              variant="outline"
+              className={`flex items-center space-x-1${
+                [...categories].splice(3).includes(selectedCategory)
+                  ? "border-primary text-primary border-b"
+                  : "border-transparent"
+              }`}
+            >
+              {[...categories].splice(3).includes(selectedCategory)
+                ? selectedCategory
+                : "more"}
+              <ChevronDown className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-max bg-card">
+            {[...categories].splice(3).map((category) => (
+              <DropdownMenuItem key={category}>
+                <Button
+                  variant={"ghost"}
+                  className={`hover:bg-card rounded-none ${
+                    selectedCategory === category
+                      ? "border-primary text-primary border-b"
+                      : "border-transparent"
+                  }`}
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  {category}
+                </Button>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </nav>
+    </>
   );
 }
 

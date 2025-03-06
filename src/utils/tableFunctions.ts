@@ -12,7 +12,7 @@ export function calculateAmountAndDishes(table: tableType): {
   let totalAmount = 0;
   Object.values(table.OrderDetails).forEach((item) => {
     Object.entries(item.sizes).forEach(([size, { quantity, price }]) => {
-      totalDishes += quantity;
+      if (item.count) totalDishes += quantity;
       totalAmount += quantity * price;
       if (quantity > 0)
         bill.billcontent = [

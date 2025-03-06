@@ -1,6 +1,5 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { menuData } from "@/utils/menu";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -10,9 +9,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import Dish from "@/DB/MenuModel";
+import { MenuItem } from "@/utils/types";
 
-function PricePage() {
-  const categories = [...new Set(menuData.map((i) => i.category))];
+async function PricePage() {
+  const menu = await Dish.find({}).lean<MenuItem[]>();
+  const categories = [...new Set(menu.map((i) => i.category))];
   return (
     <Tabs
       defaultValue={categories[0]}
@@ -34,12 +36,14 @@ function PricePage() {
               {c}
             </TabsTrigger>
           ))}
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                variant="outline"
-                className="flex items-center   space-x-1 bg-secondary"
+                variant="ghost"
+                className="flex items-center space-x-1 bg-secondary"
               >
+                more
                 <ChevronDown className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -63,19 +67,22 @@ function PricePage() {
         <TabsContent
           key={c}
           value={c}
-          className="flex-1 w-full h-full p-0 overflow-y-auto scrollbar-none"
+          className="flex-1 w-full h-full p-0 overflow-y-auto md:scrollbar-none"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full overflow-y-auto scrollbar-none p-4 ">
-            {menuData
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full overflow-y-auto md:scrollbar-none p-4 ">
+            {menu
               .filter((i) => i.category === c)
               .map((item, index) => (
-                <Card key={index} className="pt-2 hover:border-ring">
+                <Card
+                  key={index}
+                  className="pt-2 hover:border-ring flex flex-col "
+                >
                   <CardHeader className="p-2">
                     <CardTitle className=" p-0 w-full text-center">
                       {item.name}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="flex flex-col flex-grow w-full items-center gap-2 pb-2 ">
+                  <CardContent className="flex flex-col flex-grow w-full items-center justify-center gap-2 pb-2 ">
                     {Object.entries(item.sizes).map(([size, { price }]) => (
                       <p key={size} className="flex justify-between w-full">
                         <span className="capitalize">{size}</span>

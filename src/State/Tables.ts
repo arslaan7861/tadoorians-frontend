@@ -1,6 +1,5 @@
-import { getTablesData } from "@/Server-actions/getData";
+import { EmptyTableOnServer, getTablesData } from "@/Server-actions/getData";
 import { UpdateServerTable } from "@/Server-actions/updateOrders";
-import { menuData } from "@/utils/menu";
 import { OrdersState, tableType } from "@/utils/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
@@ -8,85 +7,41 @@ import { updateBill } from "./bill";
 import { toast } from "sonner";
 
 export const initialState: OrdersState = {
-  tables: {
-    "1": {
-      tableId: "1",
-      totalAmount: 0,
-      totalDishes: 0,
-      OrderDetails: menuData,
-      lastUpdated: 0,
-    },
-    "2": {
-      tableId: "2",
-      totalAmount: 0,
-      totalDishes: 0,
-      OrderDetails: menuData,
-      lastUpdated: 0,
-    },
-    "3": {
-      tableId: "3",
-      totalAmount: 0,
-      totalDishes: 0,
-      OrderDetails: menuData,
-      lastUpdated: 0,
-    },
-    "4": {
-      tableId: "4",
-      totalAmount: 0,
-      totalDishes: 0,
-      OrderDetails: menuData,
-      lastUpdated: 0,
-    },
-    "5": {
-      tableId: "5",
-      totalAmount: 0,
-      totalDishes: 0,
-      OrderDetails: menuData,
-      lastUpdated: 0,
-    },
-    "6": {
-      tableId: "6",
-      totalAmount: 0,
-      totalDishes: 0,
-      OrderDetails: menuData,
-      lastUpdated: 0,
-    },
-    "7": {
-      tableId: "7",
-      totalAmount: 0,
-      totalDishes: 0,
-      OrderDetails: menuData,
-      lastUpdated: 0,
-    },
-    "8": {
-      tableId: "8",
-      totalAmount: 0,
-      totalDishes: 0,
-      OrderDetails: menuData,
-      lastUpdated: 0,
-    },
-    "9": {
-      tableId: "9",
-      totalAmount: 0,
-      totalDishes: 0,
-      OrderDetails: menuData,
-      lastUpdated: 0,
-    },
-    "10": {
-      tableId: "10",
-      totalAmount: 0,
-      totalDishes: 0,
-      OrderDetails: menuData,
-      lastUpdated: 0,
-    },
-  },
+  tables: {},
 };
+export const EmptyTable = createAsyncThunk(
+  "tableOrders/emptytable",
+  async (tableId: string, { dispatch }) => {
+    const toastId = toast.loading("Cleaning table " + tableId);
+    try {
+      const resp = (await EmptyTableOnServer(tableId)) as string;
+      const serverResponse = JSON.parse(resp) as {
+        table: tableType;
+        ok: boolean;
+      };
+      if (!serverResponse.ok)
+        return toast.error("Failed to clean table " + tableId, {
+          id: toastId,
+          description: "Please try again...",
+        });
+      dispatch(updateTableState(serverResponse.table));
+      toast.success("Cleaned table " + tableId, { id: toastId });
+    } catch (error) {
+      if (error)
+        toast.error("Failed to clean table " + tableId, {
+          id: toastId,
+          description: "Please try again...",
+        });
+    }
+  }
+);
 export const getData = createAsyncThunk(
   "tableOrders/getData",
   async (_, { rejectWithValue, dispatch }) => {
     try {
       const resp = (await getTablesData()) as string;
-      dispatch(initTables(JSON.parse(resp) as tableType[]));
+      const tables = JSON.parse(resp) as tableType[];
+      dispatch(initTables(tables));
     } catch (error) {
       console.log(error);
       return rejectWithValue("Failed to fetch data");
@@ -97,6 +52,7 @@ export const updateTable = createAsyncThunk(
   "tableOrders/updateTable",
   async (table: tableType, { rejectWithValue, dispatch }) => {
     try {
+      const ts = Date.now();
       const { totalAmount, totalDishes, bill } =
         calculateAmountAndDishes(table);
 
@@ -104,12 +60,19 @@ export const updateTable = createAsyncThunk(
         ...table,
         totalAmount,
         totalDishes,
-        lastUpdated: Date.now(),
+        lastUpdated: ts,
       });
       if (status.ok) {
         console.log("updated table on server");
       }
-      dispatch(updateTableState(table));
+      dispatch(
+        updateTableState({
+          ...table,
+          totalAmount,
+          totalDishes,
+          lastUpdated: ts,
+        })
+      );
       dispatch(updateBill(bill));
       console.log("updated table state");
       toast.success("Saved orders succecfully!");

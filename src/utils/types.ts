@@ -4,6 +4,7 @@ export interface MenuItem {
   name: string;
   image: string;
   category: string;
+  count: boolean;
   sizes: Record<
     string,
     {
@@ -34,7 +35,6 @@ export interface tableType {
   totalAmount: number;
   totalDishes: number;
   OrderDetails: MenuItem[];
-  _id?: string;
   lastUpdated: number;
 }
 export interface OrdersState {
@@ -57,7 +57,10 @@ export interface IDish extends Document {
     full: IDishSize;
   };
   category: string;
+  count: boolean;
 }
+// Define the interface for a Table document
+export interface ITable extends Document, tableType {}
 
 export interface toastType {
   message: string;

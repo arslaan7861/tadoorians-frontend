@@ -1,16 +1,23 @@
 "use server";
 import connectDB from "@/DB";
 import TableModel from "@/DB/tableData";
-
-export async function getMenu() {
-  console.log("getting data");
-
-  return "hello";
-}
-export async function populateTables() {
+import { getEmptyMenu } from "./menuFunctions";
+export async function EmptyTableOnServer(tableId: string) {
   try {
+    console.log("empty table function");
+    const table = await TableModel.findOne({ tableId });
+    if (!table) return console.log("table not found");
+    table.OrderDetails = await getEmptyMenu();
+    console.log(table.OrderDetails.length);
+    table.totalAmount = 0;
+    table.totalDishes = 0;
+    table.save();
+    console.log({ set: table.OrderDetails.length });
+
+    return JSON.stringify({ table, ok: true });
   } catch (error) {
-    console.log("Error while populating tables:", error);
+    return JSON.stringify({ ok: false });
+    console.log(error);
   }
 }
 
@@ -19,13 +26,8 @@ export async function getTablesData() {
     console.log("getting tables data");
     //get data from database return it
     await connectDB();
-    //*code to insert initial tables
-    // await TableModel.deleteMany();
-    // const tables = await TableModel.create([
-    //   ...Object.values(initialState.tables),
-    // ]);
     const table = await TableModel.find();
-    console.log(table[0].OrderDetails[0].sizes);
+    console.log({ get: table[0].OrderDetails.length });
     return JSON.stringify(table);
   } catch (error) {
     console.log(error);

@@ -14,8 +14,8 @@ export async function UpdateServerTable(
       { ...table },
       { new: true }
     );
-    console.log(tableData.OrderDetails[0].sizes);
-    return { ok: true };
+
+    return { ok: !!tableData };
   } catch (error) {
     console.log(error);
     return { ok: false };
