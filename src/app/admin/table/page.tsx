@@ -5,6 +5,18 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/State";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+import {
   Card,
   CardContent,
   CardFooter,
@@ -18,10 +30,12 @@ import { DialogTrigger } from "@/components/ui/dialog";
 import Billcard from "@/components/TableComponents/Billcard";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
 import { updateBill } from "@/State/bill";
+import { useState } from "react";
 
 export default function RestaurantTables() {
   const { tables } = useSelector((state: RootState) => state.tables);
   const dispatch = useDispatch<AppDispatch>();
+  const [isopen, setIsOPen] = useState("");
   if (Object.entries(tables).length == 0) return <></>;
 
   return (
@@ -59,15 +73,43 @@ export default function RestaurantTables() {
             </CardContent>
 
             <CardFooter className="justify-evenly gap-2">
-              <Button
-                className="z-20"
-                disabled={data.totalAmount == 0}
-                variant="detructiveOutline"
-                onClick={() => dispatch(EmptyTable(number))}
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    className="z-20"
+                    disabled={data.totalAmount == 0}
+                    variant="detructiveOutline"
+                    // onClick={() => dispatch(EmptyTable(number))}
+                  >
+                    <X />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      table orders
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90"
+                      onClick={() => dispatch(EmptyTable(number))}
+                    >
+                      Clear
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              <Dialog
+                open={isopen === number}
+                onOpenChange={() => setIsOPen(number)}
               >
-                <X />
-              </Button>
-              <Dialog>
                 <DialogTrigger asChild>
                   <Button
                     className="z-20"
@@ -81,7 +123,7 @@ export default function RestaurantTables() {
                     <Calculator />
                   </Button>
                 </DialogTrigger>
-                <Billcard table={data} />
+                <Billcard setIsOPen={setIsOPen} table={data} />
               </Dialog>
             </CardFooter>
           </Card>

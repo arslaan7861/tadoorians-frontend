@@ -1,6 +1,6 @@
 "use client";
 import { tableType } from "@/utils/types";
-import React, { useEffect, useRef, useState } from "react";
+import React, { SetStateAction, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import {
@@ -27,6 +27,8 @@ import PrintSection from "./PrintSection";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
 import { updateBill } from "@/State/bill";
 import { toast } from "sonner";
+import { EmptyTable } from "@/State/Tables";
+import { useRouter } from "next/navigation";
 interface PaymentState {
   credited: boolean;
   paymentMethod: "cash" | "upi";
@@ -34,7 +36,14 @@ interface PaymentState {
   customerName: string;
 }
 
-function Billcard({ table }: { table: tableType }) {
+function Billcard({
+  setIsOPen,
+  table,
+}: {
+  table: tableType;
+  setIsOPen?: (value: SetStateAction<string>) => void;
+}) {
+  const router = useRouter();
   const bill = useSelector((state: RootState) => state.bill);
   const billRef = useRef<HTMLTableElement>(null);
   const dispatch = useDispatch<AppDispatch>();
@@ -58,6 +67,14 @@ function Billcard({ table }: { table: tableType }) {
   }
   const printBill = useReactToPrint({
     contentRef: billRef,
+    onAfterPrint: async () => {
+      await dispatch(EmptyTable(table.tableId));
+      if (!!setIsOPen) setIsOPen("0");
+      router.replace("/admin/table");
+    },
+    onPrintError() {
+      console.log("not printed");
+    },
   });
   return (
     <DialogContent>

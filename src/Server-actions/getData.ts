@@ -7,14 +7,11 @@ export async function EmptyTableOnServer(tableId: string) {
     await connectDB();
     console.log("empty table function");
     const table = await TableModel.findOne({ tableId });
-    if (!table) return console.log("table not found");
+    if (!table) return JSON.stringify({ ok: false });
     table.OrderDetails = await getEmptyMenu();
-    console.log(table.OrderDetails.length);
     table.totalAmount = 0;
     table.totalDishes = 0;
     table.save();
-    console.log({ set: table.OrderDetails.length });
-
     return JSON.stringify({ table, ok: true });
   } catch (error) {
     return JSON.stringify({ ok: false });
@@ -28,7 +25,6 @@ export async function getTablesData() {
     //get data from database return it
     await connectDB();
     const table = await TableModel.find();
-    console.log({ get: table[0].OrderDetails.length });
     return JSON.stringify(table);
   } catch (error) {
     console.log(error);
