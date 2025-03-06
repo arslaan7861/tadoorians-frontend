@@ -4,6 +4,7 @@ import TableModel from "@/DB/tableData";
 import { getEmptyMenu } from "./menuFunctions";
 export async function EmptyTableOnServer(tableId: string) {
   try {
+    await connectDB();
     console.log("empty table function");
     const table = await TableModel.findOne({ tableId });
     if (!table) return console.log("table not found");

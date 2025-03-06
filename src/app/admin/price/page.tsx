@@ -11,8 +11,10 @@ import { ChevronDown } from "lucide-react";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import Dish from "@/DB/MenuModel";
 import { MenuItem } from "@/utils/types";
+import connectDB from "@/DB";
 
 async function PricePage() {
+  await connectDB();
   const menu = await Dish.find({}).lean<MenuItem[]>();
   const categories = [...new Set(menu.map((i) => i.category))];
   return (
