@@ -61,7 +61,7 @@ export default function RestaurantTables() {
             <CardFooter className="justify-evenly gap-2">
               <Button
                 className="z-20"
-                // disabled={data.totalAmount == 0 && data.totalDishes == 0}
+                disabled={data.totalAmount == 0}
                 variant="detructiveOutline"
                 onClick={() => dispatch(EmptyTable(number))}
               >
