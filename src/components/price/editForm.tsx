@@ -29,14 +29,15 @@ import {
 } from "../ui/select";
 import { Plus, Trash2, Upload } from "lucide-react";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { Card, CardContent } from "../ui/card";
 
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
-  image: z.string().url({
-    message: "Please enter a valid image URL.",
-  }),
+  // image: z.string().url({
+  //   message: "Please enter a valid image URL.",
+  // }),
   category: z.string().min(1, {
     message: "Please select a category.",
   }),
@@ -62,7 +63,7 @@ export function ItemForm({ categories }: { categories: string[] }) {
     defaultValues: {
       name: "",
       category: "",
-      image: "",
+      // image: "",
       sizes: {},
     },
   });
@@ -154,7 +155,7 @@ export function ItemForm({ categories }: { categories: string[] }) {
               />
             </div>
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="image"
               render={({ field }) => (
@@ -183,7 +184,7 @@ export function ItemForm({ categories }: { categories: string[] }) {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
             <div>
               <div className="flex flex-col gap-2 items-center justify-between mb-2">
@@ -209,71 +210,89 @@ export function ItemForm({ categories }: { categories: string[] }) {
 
               <div className="space-y-4">
                 {sizeInputs.map((size) => (
-                  <div key={size} className="p-4 border rounded-md bg-muted/20">
-                    <div className="flex items-center justify-between mb-4">
-                      <h4 className="font-medium">{size}</h4>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        //   onClick={() => removeSize(size)}
-                        className="h-8 w-8 p-0"
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                        <span className="sr-only">Remove {size}</span>
-                      </Button>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card key={size} className="overflow-hidden">
+                    <CardContent className="p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-medium">{size}</h4>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          // onClick={() => removeSize(size)}
+                          className="h-6 w-6 p-0"
+                        >
+                          <Trash2 className="h-3 w-3 text-destructive" />
+                          <span className="sr-only">Remove {size}</span>
+                        </Button>
+                      </div>
                       <FormField
                         control={form.control}
                         name={`sizes.${size}.price`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Price (₹)</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                placeholder="0.00"
-                                {...field}
-                                onChange={(e) =>
-                                  field.onChange(
-                                    Number.parseFloat(e.target.value) || 0
-                                  )
-                                }
-                              />
-                            </FormControl>
+                            <div className="flex items-center">
+                              <span className="text-xs mr-2">₹</span>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  placeholder="0.00"
+                                  className="h-8 text-sm"
+                                  {...field}
+                                  onChange={(e) =>
+                                    field.onChange(
+                                      Number.parseFloat(e.target.value) || 0
+                                    )
+                                  }
+                                />
+                              </FormControl>
+                            </div>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      <FormField
-                        control={form.control}
-                        name={`sizes.${size}.quantity`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Quantity</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                min="0"
-                                step="1"
-                                placeholder="0"
-                                {...field}
-                                onChange={(e) =>
-                                  field.onChange(
-                                    Number.parseInt(e.target.value) || 0
-                                  )
-                                }
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
+                  // <div key={size} className=" rounded-md bg-muted/20">
+                  //   <FormField
+                  //     control={form.control}
+                  //     name={`sizes.${size}.price`}
+                  //     render={({ field }) => (
+                  //       <FormItem className=" flex items-center border">
+                  //         <FormLabel className="border min-w-max ">
+                  //           {size} Price
+                  //         </FormLabel>
+                  //         <FormControl className="pt-0 border">
+                  //           <Input
+                  //             type="number"
+                  //             className="m-2 mb-2"
+                  //             min="0"
+                  //             step="0.01"
+                  //             placeholder="0.00"
+                  //             {...field}
+                  //             onChange={(e) =>
+                  //               field.onChange(
+                  //                 Number.parseFloat(e.target.value) || 0
+                  //               )
+                  //             }
+                  //           />
+                  //         </FormControl>
+                  //         <FormMessage />
+                  //       </FormItem>
+                  //     )}
+                  //   />
+
+                  //   <Button
+                  //     type="button"
+                  //     variant="ghost"
+                  //     size="sm"
+                  //     //   onClick={() => removeSize(size)}
+                  //     className="h-8 w-8 p-0"
+                  //   >
+                  //     <Trash2 className="h-4 w-4 text-destructive" />
+                  //     <span className="sr-only">Remove {size}</span>
+                  //   </Button>
+                  // </div>
                 ))}
               </div>
             </div>
