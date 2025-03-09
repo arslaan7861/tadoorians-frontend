@@ -28,7 +28,7 @@ export async function NewMenu() {
 }
 export async function getEmptyMenu() {
   await connectDB();
-  const menu = await Dish.find({}, { _id: 0 }).lean<IDish[]>();
+  const menu = await Dish.find({}).lean<IDish[]>();
   console.log([...new Set(menu)].length);
   return menu;
 }

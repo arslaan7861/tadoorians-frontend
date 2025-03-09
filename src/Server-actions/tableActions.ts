@@ -32,7 +32,7 @@ export async function addServerTable(tableId: string) {
       OrderDetails: [],
       totalAmount: 0,
       totalDishes: 0,
-      tablestamp: 0,
+      tablestamp: Date.now(),
     };
     await connectDB();
     const { tableId: id } = await TableModel.create(newTable);
@@ -41,7 +41,7 @@ export async function addServerTable(tableId: string) {
     console.log("added table", tableId);
     return JSON.stringify({
       ...table,
-      tablestamp: table.updatedAt?.getTime() as number,
+      tablestamp: new Date(table.updatedAt)?.getTime() as number,
     });
   } catch (error) {
     console.log(error);
@@ -52,7 +52,7 @@ export async function removedServerTable(tableId: string) {
     console.log("removing table", tableId);
 
     await connectDB();
-    await TableModel.deleteOne({ tableId });
+    const res = await TableModel.deleteOne({ tableId });
     // const resp = await EmptyTableOnServer(id);
     // const { table } = JSON.parse(resp);
     console.log("removed table", tableId);

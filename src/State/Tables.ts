@@ -23,7 +23,7 @@ export const addTable = createAsyncThunk(
       const resp = JSON.parse(respString);
       dispatch(updateTableState(resp));
       console.log(resp);
-      toast.success("Cleaned table " + tableId, { id: toastId });
+      toast.success("Added table " + tableId, { id: toastId });
     } catch (error) {
       if (error)
         toast.error("Failed to clean table " + tableId, {
