@@ -52,7 +52,7 @@ export async function removedServerTable(tableId: string) {
     console.log("removing table", tableId);
 
     await connectDB();
-    const res = await TableModel.deleteOne({ tableId });
+    await TableModel.deleteOne({ tableId });
     // const resp = await EmptyTableOnServer(id);
     // const { table } = JSON.parse(resp);
     console.log("removed table", tableId);
