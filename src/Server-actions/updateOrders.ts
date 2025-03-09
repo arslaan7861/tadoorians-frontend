@@ -1,7 +1,7 @@
 "use server";
 
 import connectDB from "@/DB";
-import TableModel from "@/DB/tableData";
+import TableModel from "@/DB/tableModel";
 import { tableType } from "@/utils/types";
 
 export async function UpdateServerTable(

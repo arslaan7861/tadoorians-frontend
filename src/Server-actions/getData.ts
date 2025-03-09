@@ -1,23 +1,6 @@
 "use server";
 import connectDB from "@/DB";
-import TableModel from "@/DB/tableData";
-import { getEmptyMenu } from "./menuFunctions";
-export async function EmptyTableOnServer(tableId: string) {
-  try {
-    await connectDB();
-    console.log("empty table function");
-    const table = await TableModel.findOne({ tableId });
-    if (!table) return JSON.stringify({ ok: false });
-    table.OrderDetails = await getEmptyMenu();
-    table.totalAmount = 0;
-    table.totalDishes = 0;
-    table.save();
-    return JSON.stringify({ table, ok: true });
-  } catch (error) {
-    return JSON.stringify({ ok: false });
-    console.log(error);
-  }
-}
+import TableModel from "@/DB/tableModel";
 
 export async function getTablesData() {
   try {
@@ -25,6 +8,8 @@ export async function getTablesData() {
     //get data from database return it
     await connectDB();
     const table = await TableModel.find();
+    console.log("served tables data");
+
     return JSON.stringify(table);
   } catch (error) {
     console.log(error);

@@ -1,6 +1,6 @@
 "use client";
 
-import { Calculator, Delete, Plus, Trash, Utensils, X } from "lucide-react";
+import { Calculator, Plus, Trash, Utensils, X } from "lucide-react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/State";
@@ -15,14 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 import {
   Card,
@@ -43,7 +36,6 @@ import { toast } from "sonner";
 export default function RestaurantTables() {
   const { tables } = useSelector((state: RootState) => state.tables);
   const dispatch = useDispatch<AppDispatch>();
-  const [isopen, setIsOPen] = useState("");
   const [newTableName, setNewTableName] = useState("");
   function addNewTable() {
     if (!newTableName.length) return toast.error("Please enter table name");
@@ -191,8 +183,9 @@ export default function RestaurantTables() {
                 </AlertDialog>
 
                 <Dialog
-                  open={isopen === number}
-                  onOpenChange={() => setIsOPen(number)}
+                  // open={isopen === number}
+                  // onOpenChange={() => setIsOPen(number)}
+                  defaultOpen={false}
                 >
                   <DialogTrigger asChild>
                     <Button
@@ -201,13 +194,15 @@ export default function RestaurantTables() {
                       disabled={data.totalAmount == 0}
                       onClick={() => {
                         const { bill } = calculateAmountAndDishes(data);
-                        dispatch(updateBill(bill));
+                        dispatch(
+                          updateBill({ ...bill, tablestamp: data.tablestamp })
+                        );
                       }}
                     >
                       <Calculator />
                     </Button>
                   </DialogTrigger>
-                  <Billcard setIsOPen={setIsOPen} table={data} />
+                  <Billcard table={data} />
                 </Dialog>
               </CardFooter>
             </Card>

@@ -1,12 +1,13 @@
-import { EmptyTableOnServer, getTablesData } from "@/Server-actions/getData";
+import { getTablesData } from "@/Server-actions/getData";
 import { UpdateServerTable } from "@/Server-actions/updateOrders";
-import { OrdersState, tableType } from "@/utils/types";
+import { ITable, OrdersState, tableType } from "@/utils/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
 import { updateBill } from "./bill";
 import { toast } from "sonner";
 import {
   addServerTable,
+  EmptyTableOnServer,
   removedServerTable,
 } from "@/Server-actions/tableActions";
 
@@ -62,7 +63,7 @@ export const EmptyTable = createAsyncThunk(
     try {
       const resp = (await EmptyTableOnServer(tableId)) as string;
       const serverResponse = JSON.parse(resp) as {
-        table: tableType;
+        table: ITable;
         ok: boolean;
       };
       if (!serverResponse.ok)
@@ -70,9 +71,22 @@ export const EmptyTable = createAsyncThunk(
           id: toastId,
           description: "Please try again...",
         });
-      dispatch(updateTableState(serverResponse.table));
+      console.log(serverResponse.table.updatedAt);
+      const tablestamp = serverResponse.table.updatedAt
+        ? new Date(serverResponse.table.updatedAt).getTime()
+        : Date.now();
+      console.log("cleaned", tablestamp);
+
+      dispatch(
+        updateTableState({
+          ...serverResponse.table,
+          tablestamp,
+        })
+      );
       toast.success("Cleaned table " + tableId, { id: toastId });
     } catch (error) {
+      console.log(error);
+
       if (error)
         toast.error("Failed to clean table " + tableId, {
           id: toastId,
@@ -98,7 +112,6 @@ export const updateTable = createAsyncThunk(
   "tableOrders/updateTable",
   async (table: tableType, { rejectWithValue, dispatch }) => {
     try {
-      const ts = Date.now();
       const { totalAmount, totalDishes, bill } =
         calculateAmountAndDishes(table);
 
@@ -106,7 +119,6 @@ export const updateTable = createAsyncThunk(
         ...table,
         totalAmount,
         totalDishes,
-        lastUpdated: ts,
       });
       if (status.ok) {
         console.log("updated table on server");
@@ -116,10 +128,9 @@ export const updateTable = createAsyncThunk(
           ...table,
           totalAmount,
           totalDishes,
-          lastUpdated: ts,
         })
       );
-      dispatch(updateBill(bill));
+      dispatch(updateBill({ ...bill, tablestamp: table.tablestamp }));
       console.log("updated table state");
       toast.success("Saved orders succecfully!");
     } catch (error) {

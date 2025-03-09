@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Plus, Trash2, Upload } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Card, CardContent } from "../ui/card";
 

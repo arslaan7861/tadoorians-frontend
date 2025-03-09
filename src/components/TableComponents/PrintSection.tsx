@@ -61,9 +61,9 @@ function PrintSection({
               <TableCell className="text-right">{bill.discount}%</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Total</TableCell>
+              <TableCell>Amount Payable</TableCell>
               <TableCell className="text-right">
-                ₹{Math.round((bill.totalAmount * (100 - bill.discount)) / 100)}
+                ₹{bill.amountPayable}
               </TableCell>
             </TableRow>
           </>

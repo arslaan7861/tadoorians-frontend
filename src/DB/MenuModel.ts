@@ -13,7 +13,7 @@ export const DishSchema: Schema<IDish> = new Schema({
     required: true,
   },
   category: { type: String, required: true },
-  count: { type: Boolean, default: false },
+  count: { type: Boolean, default: true },
 });
 
 // Export the model

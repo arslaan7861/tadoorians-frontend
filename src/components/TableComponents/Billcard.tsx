@@ -1,6 +1,6 @@
 "use client";
 import { tableType } from "@/utils/types";
-import React, { SetStateAction, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import {
@@ -27,8 +27,8 @@ import PrintSection from "./PrintSection";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
 import { updateBill } from "@/State/bill";
 import { toast } from "sonner";
-import { EmptyTable } from "@/State/Tables";
 import { useRouter } from "next/navigation";
+import { saveBillServer } from "@/Server-actions/billActions";
 interface PaymentState {
   credited: boolean;
   paymentMethod: "cash" | "upi";
@@ -36,13 +36,7 @@ interface PaymentState {
   customerName: string;
 }
 
-function Billcard({
-  setIsOPen,
-  table,
-}: {
-  table: tableType;
-  setIsOPen?: (value: SetStateAction<string>) => void;
-}) {
+function Billcard({ table }: { table: tableType }) {
   const router = useRouter();
   const bill = useSelector((state: RootState) => state.bill);
   const billRef = useRef<HTMLTableElement>(null);
@@ -55,12 +49,41 @@ function Billcard({
   });
   useEffect(() => {
     const { bill } = calculateAmountAndDishes(table);
-    dispatch(updateBill(bill));
+    dispatch(updateBill({ ...bill, tablestamp: table.tablestamp }));
   }, [dispatch, table]);
   async function handlePrint() {
-    if (!values.customerName)
+    // validate username
+    if (!values.customerName && values.credited)
       return toast.error("Enter customer name", { position: "top-center" });
+    // calculate totals
+    const { bill } = calculateAmountAndDishes(table);
+    const amountPayable = Math.round(
+      bill.totalAmount * (1 - values.discount / 100)
+    );
+    // update bill to latest state
+    await dispatch(
+      updateBill({ ...bill, amountPayable, tablestamp: table.tablestamp })
+    );
+    // create toast
+    const toastId = toast.loading("Saving bill");
     //save bill on server
+    const respString = await saveBillServer({
+      ...bill,
+      tablestamp: table.tablestamp,
+    });
+    // check bill saved on server
+    if (!respString)
+      return toast.error("Something went wrong please try again..", {
+        id: toastId,
+        className: "bg-destructive text-destructive-foreground",
+      });
+    const resp = JSON.parse(respString);
+    if (resp.ok) toast.success(resp.message, { id: toastId });
+    else
+      return toast.error(resp.message, {
+        id: toastId,
+        className: "bg-destructive text-destructive-foreground",
+      });
     //print bill
     printBill();
     console.log({ values });
@@ -68,8 +91,7 @@ function Billcard({
   const printBill = useReactToPrint({
     contentRef: billRef,
     onAfterPrint: async () => {
-      await dispatch(EmptyTable(table.tableId));
-      if (!!setIsOPen) setIsOPen("0");
+      // await dispatch(EmptyTable(table.tableId));
       router.replace("/admin/table");
     },
     onPrintError() {
@@ -79,15 +101,13 @@ function Billcard({
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle onClick={() => handlePrint()}>
-          Table {table.tableId} Bill
-        </DialogTitle>
+        <DialogTitle>Table {table.tableId} Bill</DialogTitle>
       </DialogHeader>
-      <article className="flex justify-between text-muted-foreground bg-card px-3 z-10">
+      <article className="flex justify-between  text-muted-foreground bg-card px-3 z-10">
         <span>Items</span>
         <span>price</span>
       </article>
-      <section className="max-h-80 sm:max-h-72 overflow-y-auto relative scrollbar-thin p-3">
+      <section className="max-h-80 sm:max-h-72  overflow-y-auto relative scrollbar-thin p-3">
         <Table>
           <TableBody>
             {bill.billcontent.map((item, i) => {
@@ -106,7 +126,7 @@ function Billcard({
       <article className="flex justify-between text-muted-foreground bg-card px-3 z-10">
         <span>Total</span>
         <span className="text-card-foreground">{bill.totalAmount}</span>
-      </article>{" "}
+      </article>
       <article className="flex justify-end gap-5 px-3 items-center space-x-2">
         <Input
           value={values.customerName}

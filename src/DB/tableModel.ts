@@ -3,13 +3,16 @@ import mongoose, { Schema, Model } from "mongoose";
 import { DishSchema } from "./MenuModel";
 
 // Define the Mongoose Schema with generic type ITable
-const TableSchema: Schema<ITable> = new Schema({
-  tableId: { type: String, unique: true },
-  totalAmount: { type: Number, default: 0 },
-  totalDishes: { type: Number, default: 0 },
-  OrderDetails: [DishSchema],
-  lastUpdated: { type: Number, default: 0 },
-});
+const TableSchema: Schema<ITable> = new Schema(
+  {
+    tableId: { type: String, unique: true },
+    totalAmount: { type: Number, default: 0 },
+    totalDishes: { type: Number, default: 0 },
+    OrderDetails: [DishSchema],
+    tablestamp: { type: Number, unique: [true, "Bill alerady present.."] },
+  },
+  { timestamps: true }
+);
 
 // Create and export the model with proper typings
 const TableModel: Model<ITable> =

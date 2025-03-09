@@ -147,16 +147,7 @@ export const tandoorianMenu: MenuItem[] = [
       Full: { price: 600, quantity: 0 },
     },
   },
-  {
-    name: "Chicken Tikka",
-    image: "",
-    count: true,
-    category: "Starter",
-    sizes: {
-      Half: { price: 300, quantity: 0 },
-      Full: { price: 600, quantity: 0 },
-    },
-  },
+
   {
     name: "Chicken Roasted",
     image: "",

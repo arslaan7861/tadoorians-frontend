@@ -1,37 +1,61 @@
 "use server";
 
-import TableModel from "@/DB/tableData";
+import TableModel from "@/DB/tableModel";
 import { tableType } from "@/utils/types";
-import { EmptyTableOnServer } from "./getData";
 import connectDB from "@/DB";
+import { getEmptyMenu } from "./menuFunctions";
+export async function EmptyTableOnServer(tableId: string) {
+  try {
+    await connectDB();
+    console.log("cleaning table ", tableId);
+    const table = await TableModel.findOne({ tableId });
+    if (!table) return JSON.stringify({ ok: false });
+    table.OrderDetails = await getEmptyMenu();
+    table.totalAmount = 0;
+    table.totalDishes = 0;
+    table.save();
+    console.log("cleaned table ", tableId);
+
+    return JSON.stringify({ table, ok: true });
+  } catch (error) {
+    console.log(error);
+    return JSON.stringify({ ok: false });
+  }
+}
 
 export async function addServerTable(tableId: string) {
   try {
+    console.log("adding table", tableId);
+
     const newTable: tableType = {
       tableId,
-      lastUpdated: 0,
       OrderDetails: [],
       totalAmount: 0,
       totalDishes: 0,
+      tablestamp: 0,
     };
     await connectDB();
-    const { tableId: id, _id } = await TableModel.create(newTable);
+    const { tableId: id } = await TableModel.create(newTable);
     const resp = await EmptyTableOnServer(id);
     const { table } = JSON.parse(resp);
-
-    // console.log({ table });
-    return JSON.stringify(table);
+    console.log("added table", tableId);
+    return JSON.stringify({
+      ...table,
+      tablestamp: table.updatedAt?.getTime() as number,
+    });
   } catch (error) {
     console.log(error);
   }
 }
 export async function removedServerTable(tableId: string) {
   try {
+    console.log("removing table", tableId);
+
     await connectDB();
-    const res = await TableModel.deleteOne({ tableId });
+    await TableModel.deleteOne({ tableId });
     // const resp = await EmptyTableOnServer(id);
     // const { table } = JSON.parse(resp);
-    console.log({ res });
+    console.log("removed table", tableId);
 
     // console.log({ table });
     return JSON.stringify({ ok: true, message: "Removed table" + tableId });

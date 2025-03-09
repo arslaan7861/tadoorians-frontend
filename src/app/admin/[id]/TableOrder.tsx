@@ -16,6 +16,8 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
   const [table, setTable] = useState(
     tablesLenValid ? tables[tableId] : ({} as tableType)
   );
+  console.log(table.tableId, table.tablestamp);
+
   const [isUpdated, setIsupdated] = useState(true);
   useEffect(() => {
     console.log("setting tables");
