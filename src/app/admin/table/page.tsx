@@ -1,6 +1,6 @@
 "use client";
 
-import { Calculator, Utensils, X } from "lucide-react";
+import { Calculator, Delete, Plus, Trash, Utensils, X } from "lucide-react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/State";
@@ -15,6 +15,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 import {
   Card,
@@ -24,111 +32,188 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { EmptyTable } from "@/State/Tables";
-import { Dialog } from "@radix-ui/react-dialog";
-import { DialogTrigger } from "@/components/ui/dialog";
+import { addTable, EmptyTable, removeTable } from "@/State/Tables";
 import Billcard from "@/components/TableComponents/Billcard";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
 import { updateBill } from "@/State/bill";
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 export default function RestaurantTables() {
   const { tables } = useSelector((state: RootState) => state.tables);
   const dispatch = useDispatch<AppDispatch>();
   const [isopen, setIsOPen] = useState("");
-  if (Object.entries(tables).length == 0) return <></>;
+  const [newTableName, setNewTableName] = useState("");
+  function addNewTable() {
+    if (!newTableName.length) return toast.error("Please enter table name");
+    const tableId = newTableName.split(" ").join("_");
+    dispatch(addTable(tableId));
+  }
 
   return (
     <div className="bg-background text-textColor flex flex-col items-center justify-center w-full overflow">
-      <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full justify-center items-center p-4">
-        {Object.entries(tables).map(([number, data]) => (
-          <Card
-            key={number}
-            className="hover:border-ring hover:scale-105 transition-transform relative"
-          >
-            <Link
-              href={`${number}`}
-              className="block absolute w-full h-full"
-            ></Link>
-            <CardHeader className="items-center">
-              <CardTitle className="font-bold text-lg">
-                Table {number}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex justify-evenly flex-col gap-2 ">
-              <section className="flex items-center gap-1 text-xs md:text-sm">
-                <span className="flex w-full justify-between">
-                  Bill: <strong className="flex">₹{data.totalAmount}</strong>
-                </span>
-              </section>
-              <section className="flex items-center gap-1 text-xs md:text-sm">
-                <span className="flex w-full justify-between">
-                  Dishes:
-                  <strong className="flex items-center gap-1">
-                    <Utensils className="w-4 h-4" />
-                    {data.totalDishes}
-                  </strong>
-                </span>
-              </section>
-            </CardContent>
+      {
+        <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full justify-center items-center p-4">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Card
+                className={
+                  Object.entries(tables).length == 0
+                    ? "col-span-4 flex items-center justify-center capitalize absolute -translate-x-1/2 -translate-y-1/2 h-svh w-full min-w-full max-h-full rounded-none top-1/2 -right-1/2 bg-background border-none text-3xl text-muted flex-col gap-5"
+                    : "h-full w-full flex items-center justify-center capitalize"
+                }
+              >
+                {Object.entries(tables).length == 0 ? (
+                  <>
+                    <p>No tables added</p>
+                    <p>Tap to add</p>
+                  </>
+                ) : (
+                  <>
+                    <Plus />
+                    add table
+                  </>
+                )}
+              </Card>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Add new table</AlertDialogTitle>
+                <AlertDialogDescription>
+                  <Input
+                    value={newTableName}
+                    onChange={(e) => setNewTableName(e.target.value)}
+                  ></Input>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction asChild>
+                  <Button onClick={addNewTable}>Add</Button>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
 
-            <CardFooter className="justify-evenly gap-2">
+          {Object.entries(tables).map(([number, data]) => (
+            <Card
+              key={number}
+              className="hover:border-ring hover:scale-105 transition-transform relative"
+            >
+              <Link
+                href={`${number}`}
+                className="block absolute w-full h-full"
+              ></Link>
               <AlertDialog>
-                <AlertDialogTrigger asChild>
+                <AlertDialogTrigger
+                  asChild
+                  className="absolute right-0 text-destructive top-0"
+                >
                   <Button
-                    className="z-20"
-                    disabled={data.totalAmount == 0}
-                    variant="detructiveOutline"
-                    // onClick={() => dispatch(EmptyTable(number))}
+                    variant={"ghost"}
+                    className="hover:bg-transparent hover:scale-110 hover:text-destructive"
                   >
-                    <X />
+                    <Trash />
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
+                    <AlertDialogTitle>Delete Table {number}?</AlertDialogTitle>
                     <AlertDialogDescription>
                       This action cannot be undone. This will permanently delete
-                      table orders
+                      table {number} and clear its orders.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
-                      className="bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90"
-                      onClick={() => dispatch(EmptyTable(number))}
+                      onClick={() => dispatch(removeTable(number))}
                     >
-                      Clear
+                      Continue
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
 
-              <Dialog
-                open={isopen === number}
-                onOpenChange={() => setIsOPen(number)}
-              >
-                <DialogTrigger asChild>
-                  <Button
-                    className="z-20"
-                    variant="outline"
-                    disabled={data.totalAmount == 0}
-                    onClick={() => {
-                      const { bill } = calculateAmountAndDishes(data);
-                      dispatch(updateBill(bill));
-                    }}
-                  >
-                    <Calculator />
-                  </Button>
-                </DialogTrigger>
-                <Billcard setIsOPen={setIsOPen} table={data} />
-              </Dialog>
-            </CardFooter>
-          </Card>
-        ))}
-      </section>
+              <CardHeader className="items-center">
+                <CardTitle>Table {number} </CardTitle>
+              </CardHeader>
+              <CardContent className="flex justify-evenly flex-col gap-2 ">
+                <section className="flex items-center gap-1 text-xs md:text-sm">
+                  <span className="flex w-full justify-between">
+                    Bill: <strong className="flex">₹{data.totalAmount}</strong>
+                  </span>
+                </section>
+                <section className="flex items-center gap-1 text-xs md:text-sm">
+                  <span className="flex w-full justify-between">
+                    Dishes:
+                    <strong className="flex items-center gap-1">
+                      <Utensils className="w-4 h-4" />
+                      {data.totalDishes}
+                    </strong>
+                  </span>
+                </section>
+              </CardContent>
+
+              <CardFooter className="justify-evenly gap-2">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      className="z-20"
+                      disabled={data.totalAmount == 0}
+                      variant="destructiveOutline"
+                      // onClick={() => dispatch(EmptyTable(number))}
+                    >
+                      <X />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete table orders
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90"
+                        onClick={() => dispatch(EmptyTable(number))}
+                      >
+                        Clear
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
+                <Dialog
+                  open={isopen === number}
+                  onOpenChange={() => setIsOPen(number)}
+                >
+                  <DialogTrigger asChild>
+                    <Button
+                      className="z-20"
+                      variant="outline"
+                      disabled={data.totalAmount == 0}
+                      onClick={() => {
+                        const { bill } = calculateAmountAndDishes(data);
+                        dispatch(updateBill(bill));
+                      }}
+                    >
+                      <Calculator />
+                    </Button>
+                  </DialogTrigger>
+                  <Billcard setIsOPen={setIsOPen} table={data} />
+                </Dialog>
+              </CardFooter>
+            </Card>
+          ))}
+        </section>
+      }
     </div>
   );
 }

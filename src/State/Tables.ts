@@ -5,10 +5,56 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { calculateAmountAndDishes } from "@/utils/tableFunctions";
 import { updateBill } from "./bill";
 import { toast } from "sonner";
+import {
+  addServerTable,
+  removedServerTable,
+} from "@/Server-actions/tableActions";
 
 export const initialState: OrdersState = {
   tables: {},
 };
+export const addTable = createAsyncThunk(
+  "tableOrders/addTable",
+  async (tableId: string, { dispatch }) => {
+    const toastId = toast.loading("Adding table " + tableId);
+    try {
+      const respString = (await addServerTable(tableId)) as string;
+      const resp = JSON.parse(respString);
+      dispatch(updateTableState(resp));
+      console.log(resp);
+      toast.success("Cleaned table " + tableId, { id: toastId });
+    } catch (error) {
+      if (error)
+        toast.error("Failed to clean table " + tableId, {
+          id: toastId,
+          description: "Please try again...",
+        });
+    }
+  }
+);
+export const removeTable = createAsyncThunk(
+  "tableOrders/removeTable",
+  async (tableId: string, { dispatch }) => {
+    const toastId = toast.loading("Cleaning table " + tableId);
+    try {
+      const respString = await removedServerTable(tableId);
+      const resp = JSON.parse(respString);
+      if (!resp.ok)
+        return toast.error(resp.message, {
+          id: toastId,
+          description: "Please try again...",
+        });
+      dispatch(removeTableState(tableId));
+      toast.success("Cleaned table " + tableId, { id: toastId });
+    } catch (error) {
+      if (error)
+        toast.error("Failed to remove table " + tableId, {
+          id: toastId,
+          description: "Please try again...",
+        });
+    }
+  }
+);
 export const EmptyTable = createAsyncThunk(
   "tableOrders/emptytable",
   async (tableId: string, { dispatch }) => {
@@ -95,8 +141,12 @@ const tableOrdersSlice = createSlice({
       });
       console.log("updated tables from server");
     },
+    removeTableState: (state, { payload }: PayloadAction<string>) => {
+      if (state.tables[payload]) delete state.tables[payload];
+    },
   },
   // extraReducers: (builder) => {},
 });
-export const { updateTableState, initTables } = tableOrdersSlice.actions;
+export const { updateTableState, initTables, removeTableState } =
+  tableOrdersSlice.actions;
 export default tableOrdersSlice.reducer;
