@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+
 import {
   Form,
   FormControl,
@@ -164,7 +165,7 @@ export function ItemForm({
           <h1 className="py-2 h-16 sticky top-0 bg-background w-full flex items-center">
             {item.name ? <>Edit {item.name}</> : "Add new dish"}
           </h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <article className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
               control={form.control}
               name="name"
@@ -231,7 +232,7 @@ export function ItemForm({
                 </FormItem>
               )}
             />
-          </div>
+          </article>
 
           {/* <FormField
               control={form.control}
