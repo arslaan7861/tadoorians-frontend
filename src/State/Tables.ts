@@ -108,6 +108,7 @@ export const getData = createAsyncThunk(
     }
   }
 );
+// export const update
 export const updateTable = createAsyncThunk(
   "tableOrders/updateTable",
   async (table: tableType, { rejectWithValue, dispatch }) => {

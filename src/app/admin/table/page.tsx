@@ -41,6 +41,7 @@ export default function RestaurantTables() {
     if (!newTableName.length) return toast.error("Please enter table name");
     const tableId = newTableName.split(" ").join("_");
     dispatch(addTable(tableId));
+    setNewTableName("");
   }
 
   return (
@@ -76,6 +77,9 @@ export default function RestaurantTables() {
                   <Input
                     value={newTableName}
                     onChange={(e) => setNewTableName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") addNewTable();
+                    }}
                   ></Input>
                 </AlertDialogDescription>
               </AlertDialogHeader>

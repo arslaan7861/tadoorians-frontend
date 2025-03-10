@@ -4,6 +4,18 @@ import TableModel from "@/DB/tableModel";
 import { tableType } from "@/utils/types";
 import connectDB from "@/DB";
 import { getEmptyMenu } from "./menuFunctions";
+export async function updateEmptyTables() {
+  try {
+    const menu = await getEmptyMenu();
+    const res = await TableModel.updateMany(
+      { totalAmount: 0 },
+      { OrderDetails: menu }
+    );
+    console.log({ res });
+  } catch (error) {
+    console.log(error);
+  }
+}
 export async function EmptyTableOnServer(tableId: string) {
   try {
     await connectDB();
@@ -56,8 +68,6 @@ export async function removedServerTable(tableId: string) {
     // const resp = await EmptyTableOnServer(id);
     // const { table } = JSON.parse(resp);
     console.log("removed table", tableId);
-
-    // console.log({ table });
     return JSON.stringify({ ok: true, message: "Removed table" + tableId });
   } catch (error) {
     return JSON.stringify({

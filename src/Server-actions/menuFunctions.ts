@@ -3,7 +3,8 @@
 import connectDB from "@/DB";
 import Dish from "@/DB/MenuModel";
 import { tandoorianMenu } from "@/utils/newMenu";
-import { IDish } from "@/utils/types";
+import { IDish, MenuItem } from "@/utils/types";
+import { updateEmptyTables } from "./tableActions";
 
 export async function NewMenu() {
   try {
@@ -22,6 +23,38 @@ export async function NewMenu() {
     );
     const menu = await Dish.find({}).lean<IDish[]>();
     console.log("Created menu:", menu.length);
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function addUpdateItem(item: MenuItem, _id: string) {
+  try {
+    if (!_id) {
+      const newItem = await Dish.create({ ...item });
+      await updateEmptyTables();
+      return JSON.stringify({
+        ok: true,
+        message: "Added " + newItem.name + " in menu",
+      });
+    }
+    const updatedItem = await Dish.findByIdAndUpdate(
+      _id,
+      { $set: item },
+      { new: true }
+    );
+    if (!updatedItem)
+      return JSON.stringify({
+        ok: true,
+        message: "Failed to edit item",
+      });
+    await updateEmptyTables();
+    return JSON.stringify({
+      ok: true,
+      message: "Edited " + updatedItem.name + " in menu",
+    });
+
+    // const Item = await Dish.updateOne({ name: item.name }, { name: item.name });
+    console.log({ item, _id });
   } catch (error) {
     console.log(error);
   }

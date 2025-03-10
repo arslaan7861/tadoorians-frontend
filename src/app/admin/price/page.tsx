@@ -1,20 +1,19 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { Button } from "@/components/ui/button";
+import { ChevronDown, EllipsisVertical } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-
-import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import Dish from "@/DB/MenuModel";
 import { MenuItem } from "@/utils/types";
 import connectDB from "@/DB";
-import ItemForm from "@/components/price/editForm";
+import Link from "next/link";
 
 async function PricePage() {
   await connectDB();
@@ -22,16 +21,6 @@ async function PricePage() {
   const categories = [...new Set(menu.map((i) => i.category))];
   return (
     <>
-      <div className="fixed bottom-16 py-2 right-10 md:right-16 z-50">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button size={"lg"} variant={"default"}>
-              Edit
-            </Button>
-          </DialogTrigger>
-          <ItemForm categories={categories} />
-        </Dialog>
-      </div>
       <Tabs
         defaultValue={categories[0]}
         className="w-full h-full max-h-full max-w-full flex flex-col"
@@ -91,12 +80,28 @@ async function PricePage() {
                 .map((item, index) => (
                   <Card
                     key={index}
-                    className="pt-2 hover:border-ring flex flex-col "
+                    className="pt-2 hover:border-ring flex flex-col relative"
                   >
                     <CardHeader className="p-2">
                       <CardTitle className=" p-0 w-full text-center">
                         {item.name}
                       </CardTitle>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <EllipsisVertical className="absolute right-1 top-1" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="">
+                          <DropdownMenuItem asChild>
+                            <Link
+                              href={
+                                "/admin/price/" + item.name.replaceAll(" ", "_")
+                              }
+                            >
+                              Edit
+                            </Link>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </CardHeader>
                     <CardContent className="flex flex-col flex-grow w-full items-center justify-center gap-2 pb-2 ">
                       {Object.entries(item.sizes).map(([size, { price }]) => (
