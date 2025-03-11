@@ -29,6 +29,7 @@ export async function NewMenu() {
 }
 export async function addUpdateItem(item: MenuItem, _id: string) {
   try {
+    await connectDB();
     if (!_id) {
       const newItem = await Dish.create({ ...item });
       await updateEmptyTables();
@@ -69,6 +70,8 @@ export async function getEmptyMenu() {
 
 export async function removeItem(name: string) {
   try {
+    await connectDB();
+
     const res = await Dish.deleteOne({ name });
     console.log({ res });
     await updateEmptyTables();

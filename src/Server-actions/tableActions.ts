@@ -6,6 +6,7 @@ import connectDB from "@/DB";
 import { getEmptyMenu } from "./menuFunctions";
 export async function updateEmptyTables() {
   try {
+    await connectDB();
     const menu = await getEmptyMenu();
 
     const res = await TableModel.updateMany(
