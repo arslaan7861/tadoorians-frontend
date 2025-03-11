@@ -25,6 +25,7 @@ function PWA() {
   useEffect(() => {
     if ("serviceWorker" in navigator && "PushManager" in window) {
       registerServiceWorker();
+    } else {
     }
   }, []);
 
@@ -58,6 +59,7 @@ function PWA() {
       await subscribeUser(serializedSub);
     } catch (error) {
       console.log(error);
+      toast.error("error while asking notification");
     }
   }
 
