@@ -52,11 +52,12 @@ export async function addUpdateItem(item: MenuItem, _id: string) {
       ok: true,
       message: "Edited " + updatedItem.name + " in menu",
     });
-
-    // const Item = await Dish.updateOne({ name: item.name }, { name: item.name });
-    console.log({ item, _id });
   } catch (error) {
     console.log(error);
+    return JSON.stringify({
+      ok: false,
+      message: "Failed to edit item",
+    });
   }
 }
 export async function getEmptyMenu() {
@@ -64,4 +65,22 @@ export async function getEmptyMenu() {
   const menu = await Dish.find({}).lean<IDish[]>();
   console.log([...new Set(menu)].length);
   return menu;
+}
+
+export async function removeItem(name: string) {
+  try {
+    const res = await Dish.deleteOne({ name });
+    console.log({ res });
+    await updateEmptyTables();
+    return JSON.stringify({
+      ok: true,
+      message: "Removed " + name,
+    });
+  } catch (error) {
+    console.log("error while removing " + name, error);
+    return JSON.stringify({
+      ok: false,
+      message: "Failed to Renove " + name,
+    });
+  }
 }

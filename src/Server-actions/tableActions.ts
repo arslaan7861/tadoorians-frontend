@@ -7,6 +7,7 @@ import { getEmptyMenu } from "./menuFunctions";
 export async function updateEmptyTables() {
   try {
     const menu = await getEmptyMenu();
+
     const res = await TableModel.updateMany(
       { totalAmount: 0 },
       { OrderDetails: menu }

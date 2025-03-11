@@ -32,6 +32,7 @@ import Link from "next/link";
 import { AppDispatch } from "@/State";
 import { useDispatch } from "react-redux";
 import { getData } from "@/State/Tables";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -73,7 +74,7 @@ export function ItemForm({
     },
   });
   const dispatch = useDispatch<AppDispatch>();
-
+  const router = useRouter();
   const [sizeInputs, setSizeInputs] = useState<string[]>(() => {
     return Object.keys(item.sizes).map((sizeKey) => sizeKey);
   });
@@ -118,7 +119,8 @@ export function ItemForm({
       const resp = JSON.parse(rspString) as { ok: boolean; message: string };
       if (resp.ok) {
         await dispatch(getData());
-        return toast.success(resp.message, { id: toastId });
+        toast.success(resp.message, { id: toastId });
+        return router.replace("/admin/price");
       } else return toast.error(resp.message, { id: toastId });
     } catch (error) {
       console.log("error while saving item", error);
@@ -161,7 +163,7 @@ export function ItemForm({
   return (
     <section className="min-h-full max-h-full flex-grow flex flex-col items-center justify-center overflow-hidden md:border-r">
       <Form {...form}>
-        <form className="space-y-4 px-6 overflow-y-auto md:scrollbar-none max-w-full flex-grow relative min-h-full">
+        <form className="space-y-4 px-6 overflow-y-auto sm:scrollbar-none max-w-full flex-grow relative min-h-full">
           <h1 className="py-2 h-16 sticky top-0 bg-background w-full flex items-center">
             {item.name ? <>Edit {item.name}</> : "Add new dish"}
           </h1>

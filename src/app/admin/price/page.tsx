@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
-import { ChevronDown, EllipsisVertical } from "lucide-react";
+import { ChevronDown, Edit2, EllipsisVertical, Plus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +14,7 @@ import Dish from "@/DB/MenuModel";
 import { MenuItem } from "@/utils/types";
 import connectDB from "@/DB";
 import Link from "next/link";
+import ItemDeleteBtn from "@/components/price/itemDelete";
 
 async function PricePage() {
   await connectDB();
@@ -72,9 +73,9 @@ async function PricePage() {
           <TabsContent
             key={c}
             value={c}
-            className="flex-1 w-full h-full p-0 overflow-y-auto md:scrollbar-none"
+            className="flex-1 w-full h-full p-0 overflow-y-auto sm:scrollbar-none"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full overflow-y-auto md:scrollbar-none p-4 ">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full overflow-y-auto sm:scrollbar-none p-4 ">
               {menu
                 .filter((i) => i.category === c)
                 .map((item, index) => (
@@ -97,9 +98,10 @@ async function PricePage() {
                                 "/admin/price/" + item.name.replaceAll(" ", "_")
                               }
                             >
-                              Edit
+                              <Edit2 /> Edit
                             </Link>
                           </DropdownMenuItem>
+                          <ItemDeleteBtn itemname={item.name} />
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </CardHeader>
@@ -113,6 +115,18 @@ async function PricePage() {
                     </CardContent>
                   </Card>
                 ))}
+              <Button
+                variant={"outline"}
+                className={
+                  "h-full w-full flex items-center bg-card justify-center capitalize"
+                }
+                asChild
+              >
+                <Link href={"/admin/price/_"}>
+                  <Plus />
+                  add new
+                </Link>
+              </Button>
             </div>
           </TabsContent>
         ))}

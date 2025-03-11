@@ -89,9 +89,11 @@ async function TableOrder({ params }: PageProps) {
       </Accordion>
       <Sheet>
         <SheetTrigger className="md:hidded absolute top-4 right-4" asChild>
-          <Button variant={"outline"}>Select an other</Button>
+          <Button className="md:hidden" variant={"outline"}>
+            Select another
+          </Button>
         </SheetTrigger>
-        <SheetContent className="md:hidden">
+        <SheetContent className="md:hidden px-0">
           <SheetHeader>
             <SheetTitle>Select an item</SheetTitle>
             <Accordion
@@ -103,7 +105,7 @@ async function TableOrder({ params }: PageProps) {
                 <AccordionItem
                   value={c}
                   key={c}
-                  className="max-h-full overflow-y-auto"
+                  className="max-h-full overflow-y-auto px-3"
                 >
                   <AccordionTrigger className="pl-2">{c}</AccordionTrigger>
                   <AccordionContent className="flex flex-col items-start">
