@@ -35,7 +35,7 @@ function PWA() {
       updateViaCache: "all",
     });
     const sub = await registration.pushManager.getSubscription();
-    if (!sub)
+    if (!sub) {
       toast("Enable Notifications", {
         description: "Get order updates and exclusive offers in real time.",
         position: "top-center",
@@ -45,6 +45,8 @@ function PWA() {
           children: <Button>Allow</Button>,
         },
       });
+      subscribeToPush();
+    }
   }
   async function subscribeToPush() {
     try {
