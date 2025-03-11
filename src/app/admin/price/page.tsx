@@ -65,7 +65,7 @@ async function PricePage() {
                 {[...categories].splice(3).map((c) => (
                   <DropdownMenuItem key={c}>
                     <TabsTrigger
-                      className="data-[state=active]:border-b-0 data-[state=active]:text-primary"
+                      className="data-[state=active]:border-b-0 data-[state=active]:text-primary data-[state=active]:shadow-none"
                       key={c}
                       value={c}
                     >
