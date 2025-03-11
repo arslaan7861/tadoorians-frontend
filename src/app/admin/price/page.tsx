@@ -27,10 +27,14 @@ async function PricePage() {
         className="w-full h-full max-h-full max-w-full flex flex-col"
       >
         <nav className="w-full h-min overflow-x-auto md:scrollbar-none">
-          <TabsList className="hidden md:flex space-x-4 justify-start w-full">
+          <TabsList className="hidden md:flex space-x-4 justify-start w-full ">
             {categories.map((c) => {
               return (
-                <TabsTrigger key={c} value={c}>
+                <TabsTrigger
+                  className="data-[state=active]:shadow-none"
+                  key={c}
+                  value={c}
+                >
                   {c}
                 </TabsTrigger>
               );
@@ -38,7 +42,11 @@ async function PricePage() {
           </TabsList>
           <TabsList className="flex md:hidden space-x-4 justify-evenly min-w-full w-min">
             {[...categories].splice(0, 3).map((c) => (
-              <TabsTrigger key={c} value={c}>
+              <TabsTrigger
+                className="data-[state=active]:shadow-none"
+                key={c}
+                value={c}
+              >
                 {c}
               </TabsTrigger>
             ))}
