@@ -61,11 +61,11 @@ async function PricePage() {
                   <ChevronDown className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-max bg-card">
+              <DropdownMenuContent className="w-max bg-card mr-2">
                 {[...categories].splice(3).map((c) => (
-                  <DropdownMenuItem key={c}>
+                  <DropdownMenuItem className="shadow-none" key={c}>
                     <TabsTrigger
-                      className="data-[state=active]:border-b-0 data-[state=active]:text-primary data-[state=active]:shadow-none"
+                      className="justify-start data-[state=active]:border-b-0 data-[state=active]:text-primary data-[state=active]:shadow-none w-full"
                       key={c}
                       value={c}
                     >
