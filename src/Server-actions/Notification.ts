@@ -22,6 +22,7 @@ let subscription: PushSubscription | null = {
 export async function subscribeUser(sub: PushSubscription) {
   subscription = sub;
   console.log(sub);
+  await sendNotification("test notificaion");
 
   return { success: true };
 }
