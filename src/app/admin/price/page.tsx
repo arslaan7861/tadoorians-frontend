@@ -57,7 +57,7 @@ async function PricePage() {
                   variant="ghost"
                   className="flex items-center space-x-1 bg-secondary shadow-none"
                 >
-                  more
+                  More
                   <ChevronDown className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
