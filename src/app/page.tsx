@@ -1,12 +1,7 @@
-import PWA from "@/components/RootComponents/PWA";
 import React from "react";
 
 function MenuPage() {
-  return (
-    <div className="text-textColor">
-      <PWA />
-    </div>
-  );
+  return <div className="text-textColor"></div>;
 }
 
 export default MenuPage;

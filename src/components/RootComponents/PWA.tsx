@@ -1,11 +1,8 @@
 "use client";
 
-import {
-  subscribeUser,
-  unsubscribeUser,
-  sendNotification,
-} from "@/Server-actions/Notification";
-import { useState, useEffect } from "react";
+import { subscribeUser, sendNotification } from "@/Server-actions/Notification";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 function urlBase64ToUint8Array(base64String: string) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -20,15 +17,12 @@ function urlBase64ToUint8Array(base64String: string) {
   return outputArray;
 }
 function PWA() {
-  const [isSupported, setIsSupported] = useState(false);
-  const [subscription, setSubscription] = useState<PushSubscription | null>(
-    null
-  );
-  const [message, setMessage] = useState("");
+  // const [subscription, setSubscription] = useState<PushSubscription | null>(
+  //   null
+  // );
 
   useEffect(() => {
     if ("serviceWorker" in navigator && "PushManager" in window) {
-      setIsSupported(true);
       registerServiceWorker();
     }
   }, []);
@@ -36,12 +30,18 @@ function PWA() {
   async function registerServiceWorker() {
     const registration = await navigator.serviceWorker.register("/sw.js", {
       scope: "/",
-      updateViaCache: "none",
+      updateViaCache: "all",
     });
     const sub = await registration.pushManager.getSubscription();
-    setSubscription(sub);
+    if (!sub)
+      toast("Enable Notifications", {
+        description: "Get order updates and exclusive offers in real time.",
+        action: {
+          label: "Allow",
+          onClick: subscribeToPush,
+        },
+      });
   }
-
   async function subscribeToPush() {
     const registration = await navigator.serviceWorker.ready;
     const sub = await registration.pushManager.subscribe({
@@ -50,50 +50,29 @@ function PWA() {
         process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
       ),
     });
-    setSubscription(sub);
     const serializedSub = JSON.parse(JSON.stringify(sub));
     await subscribeUser(serializedSub);
+    await sendNotification("test message");
   }
 
-  async function unsubscribeFromPush() {
-    await subscription?.unsubscribe();
-    setSubscription(null);
-    await unsubscribeUser();
-  }
-
-  async function sendTestNotification() {
-    if (subscription) {
-      await sendNotification(message);
-      setMessage("");
-    }
-  }
-
-  if (!isSupported) {
-    return <p>Push notifications are not supported in this browser.</p>;
-  }
-
-  return (
-    <div>
-      <h3>Push Notifications</h3>
-      {subscription ? (
-        <>
-          <p>You are subscribed to push notifications.</p>
-          <button onClick={unsubscribeFromPush}>Unsubscribe</button>
-          <input
-            type="text"
-            placeholder="Enter notification message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <button onClick={sendTestNotification}>Send Test</button>
-        </>
-      ) : (
-        <>
-          <p>You are not subscribed to push notifications.</p>
-          <button onClick={subscribeToPush}>Subscribe</button>
-        </>
-      )}
-    </div>
-  );
+  return <></>;
 }
 export default PWA;
+// function InstallPrompt() {
+//   const [isIOS, setIsIOS] = useState(false);
+//   const [isStandalone, setIsStandalone] = useState(false);
+
+//   useEffect(() => {
+//     setIsIOS(
+//       /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
+//     );
+
+//     setIsStandalone(window.matchMedia("(display-mode: standalone)").matches);
+//   }, []);
+
+//   if (isStandalone) {
+//     return null; // Don't show install button if already installed
+//   }
+
+//   return <div></div>;
+// }

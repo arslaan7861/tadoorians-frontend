@@ -8,21 +8,32 @@ webpush.setVapidDetails(
   process.env.VAPID_PRIVATE_KEY!
 );
 
-let subscription: PushSubscription | null = null;
+let subscription: PushSubscription | null = {
+  endpoint:
+    "https://jmt17.google.com/fcm/send/dwU2wcvBjms:APA91bEog__9qYBy6WrUdu02LrvJBT8v7019a_pNSvjBqqCEXaI-NcqIi2jx4n32a_6IdKRgHrEF-WDU0V44dwkVWUfdpfSYVQXpbiVb-wveaJvRGtso95Ffnodc3X23u0Ed91Xk10op",
+  expirationTime: null,
+  keys: {
+    p256dh:
+      "BOwvw_A7y7hMMznZ-8vDTXol_Bl-IvQNvkvThy9P0sBE1Fh1W38XuGXwSLf68Knxqoe8OhV3M_RnQ56QJHYiG4Q",
+    auth: "uSivEOtP1qvFDlYIFkCDsw",
+  },
+};
 
 export async function subscribeUser(sub: PushSubscription) {
   subscription = sub;
+  console.log(sub);
+
   return { success: true };
 }
 
 export async function unsubscribeUser() {
   subscription = null;
-  // In a production environment, you would want to remove the subscription from the database
-  // For example: await db.subscriptions.delete({ where: { ... } })
   return { success: true };
 }
 
 export async function sendNotification(message: string) {
+  console.log("sending notification");
+
   if (!subscription) {
     return new Error("No subscription available");
   } else {
