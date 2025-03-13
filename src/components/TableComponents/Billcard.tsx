@@ -29,6 +29,7 @@ import { updateBill } from "@/State/bill";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { saveBillServer } from "@/Server-actions/billActions";
+import { isOffline } from "@/utils/isOffline";
 interface PaymentState {
   credited: boolean;
   paymentMethod: "cash" | "upi";
@@ -66,6 +67,13 @@ function Billcard({ table }: { table: tableType }) {
     );
     // create toast
     const toastId = toast.loading("Saving bill");
+    if (isOffline()) {
+      toast.error("You are offline", {
+        id: toastId,
+        description: "Please connect to internet",
+      });
+      return;
+    }
     //save bill on server
     const respString = await saveBillServer({
       ...bill,

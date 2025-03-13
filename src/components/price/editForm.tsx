@@ -33,6 +33,7 @@ import { AppDispatch } from "@/State";
 import { useDispatch } from "react-redux";
 import { getData } from "@/State/Tables";
 import { useRouter } from "next/navigation";
+import { isOffline } from "@/utils/isOffline";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -115,6 +116,13 @@ export function ItemForm({
         count,
         image: "",
       };
+      if (isOffline()) {
+        toast.error("You are offline", {
+          id: toastId,
+          description: "Please connect to internet",
+        });
+        return;
+      }
       const rspString = (await addUpdateItem(editedItem, _id)) as string;
       const resp = JSON.parse(rspString) as { ok: boolean; message: string };
       if (resp.ok) {

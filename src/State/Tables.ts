@@ -10,6 +10,7 @@ import {
   EmptyTableOnServer,
   removedServerTable,
 } from "@/Server-actions/tableActions";
+import { isOffline } from "@/utils/isOffline";
 
 export const initialState: OrdersState = {
   tables: {},
@@ -19,6 +20,13 @@ export const addTable = createAsyncThunk(
   async (tableId: string, { dispatch }) => {
     const toastId = toast.loading("Adding table " + tableId);
     try {
+      if (isOffline()) {
+        toast.error("You are offline", {
+          id: toastId,
+          description: "Please connect to internet",
+        });
+        return;
+      }
       const respString = (await addServerTable(tableId)) as string;
       const resp = JSON.parse(respString);
       dispatch(updateTableState(resp));
@@ -38,6 +46,13 @@ export const removeTable = createAsyncThunk(
   async (tableId: string, { dispatch }) => {
     const toastId = toast.loading("Cleaning table " + tableId);
     try {
+      if (isOffline()) {
+        toast.error("You are offline", {
+          id: toastId,
+          description: "Please connect to internet",
+        });
+        return;
+      }
       const respString = await removedServerTable(tableId);
       const resp = JSON.parse(respString);
       if (!resp.ok)
@@ -61,6 +76,13 @@ export const EmptyTable = createAsyncThunk(
   async (tableId: string, { dispatch }) => {
     const toastId = toast.loading("Cleaning table " + tableId);
     try {
+      if (isOffline()) {
+        toast.error("You are offline", {
+          id: toastId,
+          description: "Please connect to internet",
+        });
+        return;
+      }
       const resp = (await EmptyTableOnServer(tableId)) as string;
       const serverResponse = JSON.parse(resp) as {
         table: ITable;
@@ -99,6 +121,12 @@ export const getData = createAsyncThunk(
   "tableOrders/getData",
   async (_, { rejectWithValue, dispatch }) => {
     try {
+      if (isOffline()) {
+        toast.error("You are offline", {
+          description: "Please connect to internet",
+        });
+        return;
+      }
       const resp = (await getTablesData()) as string;
       const tables = JSON.parse(resp) as tableType[];
       dispatch(initTables(tables));
@@ -113,6 +141,12 @@ export const updateTable = createAsyncThunk(
   "tableOrders/updateTable",
   async (table: tableType, { rejectWithValue, dispatch }) => {
     try {
+      if (isOffline()) {
+        toast.error("You are offline", {
+          description: "Please connect to internet",
+        });
+        return;
+      }
       const { totalAmount, totalDishes, bill } =
         calculateAmountAndDishes(table);
 

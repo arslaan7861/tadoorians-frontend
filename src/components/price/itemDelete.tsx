@@ -19,6 +19,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "../ui/button";
+import { isOffline } from "@/utils/isOffline";
 
 function ItemDeleteBtn({ itemname }: { itemname: string }) {
   const router = useRouter();
@@ -47,6 +48,13 @@ function ItemDeleteBtn({ itemname }: { itemname: string }) {
               onClick={async () => {
                 const toastId = toast.loading("Removing " + itemname);
                 try {
+                  if (isOffline()) {
+                    toast.error("You are offline", {
+                      id: toastId,
+                      description: "Please connect to internet",
+                    });
+                    return;
+                  }
                   const rspString = (await removeItem(itemname)) as string;
                   const resp = JSON.parse(rspString) as {
                     ok: boolean;

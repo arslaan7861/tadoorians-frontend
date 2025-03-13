@@ -1,6 +1,6 @@
 @tailwind base;
 * {
-  @apply p-0 m-0 box-border select-none;
+  @apply p-0 m-0 box-border select-none sm:scrollbar-none;
 }
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
