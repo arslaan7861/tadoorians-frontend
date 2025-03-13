@@ -2,7 +2,7 @@
 import React from "react";
 import {
   ChartNoAxesCombined,
-  ChefHat,
+  CreditCard,
   IndianRupee,
   Utensils,
 } from "lucide-react";
@@ -10,7 +10,7 @@ import Link from "next/link";
 const menuItems = [
   { icon: IndianRupee, label: "price" },
   { icon: Utensils, label: "table" },
-  { icon: ChefHat, label: "kitchen" },
+  { icon: CreditCard, label: "credits" },
   { icon: ChartNoAxesCombined, label: "history" },
 ];
 

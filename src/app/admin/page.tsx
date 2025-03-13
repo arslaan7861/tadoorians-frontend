@@ -2,7 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ChefHat, CreditCard, Users } from "lucide-react";
 
-export default function RestaurantTables() {
+export default async function RestaurantTables() {
+  await setTimeout(() => console.log("hello"), 3000);
   return (
     <main className="flex-grow space-y-4 p-4 sm:p-6 lg:p-8 overflow-y-auto">
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
