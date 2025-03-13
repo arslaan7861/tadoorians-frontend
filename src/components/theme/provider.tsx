@@ -14,6 +14,7 @@ import { themeType } from "@/utils/types";
 import { setThemeCookie } from "@/Server-actions/getTheme";
 import { toast } from "sonner";
 import { isOffline } from "@/utils/isOffline";
+import { useRouter } from "next/navigation";
 interface ThemeContextType {
   theme: themeType;
   toggleTheme: () => void;
@@ -32,6 +33,7 @@ export const ThemeProvider = ({
 }) => {
   const doc = useRef<HTMLHtmlElement>(null);
   const [theme, setTheme] = useState<themeType>(userTheme);
+  const router = useRouter();
   useEffect(() => {
     let toastId: string | number;
     const handleOnline = () => {
@@ -40,6 +42,7 @@ export const ThemeProvider = ({
         description: "Connected to server",
       });
       setThemeCookie(theme);
+      router.refresh();
     };
 
     const handleOffline = () => {

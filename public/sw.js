@@ -47,8 +47,7 @@ self.addEventListener("fetch", (event) => {
         const cachedResponse = await caches.match(event.request);
         if (cachedResponse) {
           return cachedResponse;
-        }
-        if (event.request.mode === "navigate")
+        } else if (event.request.mode === "navigate")
           return await caches.match("/offline");
         // ! If not in cache, return fallback
         return new Response("Network and Cache both failed.", {
