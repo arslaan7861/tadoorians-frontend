@@ -1,4 +1,4 @@
-const CACHE_NAME = "tandoorians-v1";
+const CACHE_NAME = "tandoorians-v1.1";
 const STATIC_ASSETS = ["/offline"];
 self.addEventListener("install", (event) => {
   console.log("[SW] Installed");
@@ -52,7 +52,20 @@ self.addEventListener("fetch", (event) => {
 
         // 🌐 If navigation request, serve offline fallback
         if (event.request.mode === "navigate") {
-          return await caches.match("/offline");
+          const cache = await caches.open(CACHE_NAME);
+          const offlineFallback = await cache.match("/offline");
+
+          if (offlineFallback) {
+            // ⬅️ Return cached offline page as a redirect
+            return new Response(offlineFallback.body, {
+              status: 302,
+              statusText: "Found",
+              headers: {
+                "Content-Type": "text/html",
+                Location: "/offline",
+              },
+            });
+          }
         }
 
         // 📛 Final fallback response if all else fails
