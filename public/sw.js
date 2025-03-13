@@ -33,23 +33,29 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const method = event.request.method; // e.g., 'GET', 'POST', etc.
   const url = event.request.url;
-  if (method === "POST") return;
+  if (method !== "GET") return;
   event.respondWith(
     (async () => {
       try {
         const networkResponse = await fetch(event.request);
         // ✅ Clone & store the fresh response in cache
-        const cache = await caches.open(CACHE_NAME);
-        cache.put(event.request, networkResponse.clone());
+        if (networkResponse && networkResponse.status === 200) {
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(event.request, networkResponse.clone());
+        }
         return networkResponse; // Serve network response
       } catch (error) {
-        // 🔄 If offline or request fails, try cache
+        console.warn("[SW] Network failed, trying cache:", error);
+
         const cachedResponse = await caches.match(event.request);
-        if (cachedResponse) {
-          return cachedResponse;
-        } else if (event.request.mode === "navigate")
+        if (cachedResponse) return cachedResponse;
+
+        // 🌐 If navigation request, serve offline fallback
+        if (event.request.mode === "navigate") {
           return await caches.match("/offline");
-        // ! If not in cache, return fallback
+        }
+
+        // 📛 Final fallback response if all else fails
         return new Response("Network and Cache both failed.", {
           status: 503,
           statusText: "Service Unavailable",
