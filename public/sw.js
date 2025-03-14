@@ -1,4 +1,4 @@
-const CACHE_NAME = "tandoorians-v1.1";
+const CACHE_NAME = "tandoorians-v1.2";
 const STATIC_ASSETS = ["/offline"];
 self.addEventListener("install", (event) => {
   console.log("[SW] Installed");

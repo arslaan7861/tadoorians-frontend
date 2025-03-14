@@ -1,8 +1,8 @@
 import React from "react";
-import EditItemSkeleton from "../price/[itemId]/loading";
+import AdminLoginSkeleton from "@/app/login/loading";
 
 function Skel() {
-  return <EditItemSkeleton />;
+  return <AdminLoginSkeleton />;
 }
 
 export default Skel;

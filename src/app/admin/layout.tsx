@@ -1,13 +1,15 @@
 import DesktopSidebar from "@/components/RootComponents/DesktopSidebar";
 import MobileSidebar from "@/components/RootComponents/MobileSidebar";
 import TableDataLoader from "@/components/RootComponents/TableDataLoader";
-// import { NewMenu } from "@/Server-actions/menuFunctions";
+import { ValidateAdmin } from "@/Server-actions/adminAuthenticate";
 import StateProvider from "@/State";
+import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
-function AdminLayout({ children }: { children: ReactNode }) {
-  // NewMenu();
-  // getEmptyMenu();
+async function AdminLayout({ children }: { children: ReactNode }) {
+  const isAdmin = await ValidateAdmin();
+  if (!isAdmin) redirect("/login");
+
   return (
     <StateProvider>
       <TableDataLoader />

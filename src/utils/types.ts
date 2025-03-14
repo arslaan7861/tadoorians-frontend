@@ -73,3 +73,6 @@ export interface toastType {
   status: "success" | "error";
   timestamp: number;
 }
+export interface CREDS {
+  passsword: string | null;
+}
