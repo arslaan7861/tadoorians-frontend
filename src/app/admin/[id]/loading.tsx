@@ -4,8 +4,8 @@ export default function DishPageSkeleton() {
   return (
     <div className="p-4 space-y-6">
       {/* Tabs Skeleton */}
-      <div className="flex gap-4 flex-wrap">
-        {Array.from({ length: 7 }).map((_, i) => (
+      <div className="flex gap-2 flex-wrap">
+        {Array.from({ length: 4 }).map((_, i) => (
           <Skeleton key={i} className="h-6 w-20 rounded-full" />
         ))}
       </div>
