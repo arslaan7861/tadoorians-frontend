@@ -1,108 +1,115 @@
-// app/menu/page.tsx
+import React from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Dish from "@/DB/MenuModel";
+import { MenuItem } from "@/utils/types";
+import connectDB from "@/DB";
+import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 
-export interface MenuItem {
-  name: string;
-  image: string;
-  category: string;
-  count: boolean;
-  sizes: Record<string, { price: number }>;
-}
-
-export default function MenuPage() {
-  // Sample data matching your schema
-  const menuItems: MenuItem[] = [
-    {
-      name: "Classic Burger",
-      image: "/images/burger.jpg",
-      category: "Mains",
-      count: false,
-      sizes: {
-        Regular: { price: 12.99 },
-        Large: { price: 15.99 },
-      },
-    },
-    {
-      name: "Caesar Salad",
-      image: "/images/salad.jpg",
-      category: "Starters",
-      count: true,
-      sizes: {
-        Standard: { price: 9.99 },
-      },
-    },
-  ];
-
-  // Group items by category
-  const menuByCategory = menuItems.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
-    }
-    acc[item.category].push(item);
-    return acc;
-  }, {} as Record<string, MenuItem[]>);
-
+async function PricePage() {
+  await connectDB();
+  const menu = await Dish.find({}).lean<MenuItem[]>();
+  const categories = [...new Set(menu.map((i) => i.category))];
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-            Restaurant Menu
-          </h1>
-        </div>
-
-        {Object.entries(menuByCategory).map(([category, items]) => (
-          <section key={category} className="mb-12">
-            <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6">
-              {category}
-            </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {items.map((item) => (
-                <Card
-                  key={item.name}
-                  className="hover:shadow-lg transition-shadow"
+    <>
+      <Tabs
+        defaultValue={categories[0]}
+        className="w-full h-full max-h-full max-w-full flex flex-col"
+      >
+        <nav className="w-full h-min overflow-x-auto md:scrollbar-none">
+          <TabsList className="hidden md:flex space-x-4 justify-start w-full bg-background">
+            {categories.map((c) => {
+              return (
+                <TabsTrigger
+                  className="data-[state=active]:shadow-none"
+                  key={c}
+                  value={c}
                 >
-                  <div className="relative h-48">
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      fill
-                      className="object-cover rounded-t-lg"
-                    />
-                  </div>
-                  <CardHeader>
-                    <CardTitle className="text-xl">{item.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      {Object.entries(item.sizes).map(([size, details]) => (
-                        <div
-                          key={size}
-                          className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 p-3 rounded-lg"
-                        >
-                          <span className="text-gray-600 dark:text-gray-300">
-                            {size}
-                          </span>
-                          <span className="font-semibold text-primary">
-                            ${details.price.toFixed(2)}
-                          </span>
-                        </div>
+                  {c}
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
+          <TabsList className="flex md:hidden space-x-4 justify-evenly min-w-full w-min">
+            {[...categories].splice(0, 3).map((c) => (
+              <TabsTrigger
+                className="data-[state=active]:shadow-none"
+                key={c}
+                value={c}
+              >
+                {c}
+              </TabsTrigger>
+            ))}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex items-center space-x-1 bg-secondary shadow-none"
+                >
+                  More
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-max bg-card mr-2">
+                {[...categories].splice(3).map((c) => (
+                  <DropdownMenuItem className="shadow-none" key={c}>
+                    <TabsTrigger
+                      className="justify-start data-[state=active]:border-b-0 data-[state=active]:text-primary data-[state=active]:shadow-none w-full"
+                      key={c}
+                      value={c}
+                    >
+                      {c}
+                    </TabsTrigger>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </TabsList>
+        </nav>
+        {categories.map((c) => (
+          <TabsContent
+            key={c}
+            value={c}
+            className="flex-1 w-full h-full p-0 overflow-y-auto sm:scrollbar-none"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full overflow-y-auto sm:scrollbar-none p-4 ">
+              {menu
+                .filter((i) => i.category === c)
+                .map((item, index) => (
+                  <Card
+                    key={index}
+                    className="pt-2 rounded-none border-none shadow-md hover:scale-105 transition-transform flex flex-col relative"
+                  >
+                    <CardHeader className="p-2">
+                      <CardTitle className=" p-0 w-full text-center">
+                        {item.name}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-col flex-grow w-full items-center justify-center gap-2 pb-2 ">
+                      {Object.entries(item.sizes).map(([size, { price }]) => (
+                        <p key={size} className="flex justify-between w-full">
+                          <span className="capitalize">{size}</span>
+                          <strong>₹{price}</strong>
+                        </p>
                       ))}
-                    </div>
-                    {item.count && (
-                      <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                        * Price per piece
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))}
             </div>
-          </section>
+          </TabsContent>
         ))}
-      </div>
-    </main>
+      </Tabs>
+    </>
   );
 }
+
+export default PricePage;
