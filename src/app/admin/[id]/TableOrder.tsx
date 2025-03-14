@@ -8,14 +8,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { tableType } from "@/utils/types";
+import TableLoading from "./loading";
 
 export default function RestaurantMenu({ tableId }: { tableId: string }) {
+  const [mounted, setMounted] = useState(false);
   const { tables } = useSelector((state: RootState) => state.tables);
   const tablesLenValid = Object.entries(tables).length > 0;
   const [selectedCategory, setSelectedCategory] = useState<string>("Starter");
   const [table, setTable] = useState(
     tablesLenValid ? tables[tableId] : ({} as tableType)
   );
+  // Ensure rendering only after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   console.log(table.tableId, table.tablestamp);
 
   const [isUpdated, setIsupdated] = useState(true);
@@ -61,7 +67,10 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
       return newState;
     });
   }
-
+  if (!mounted) {
+    // 🔹 Skeleton rendering on first mount
+    return <TableLoading></TableLoading>;
+  }
   if (!tablesLenValid || !table.OrderDetails) return <></>;
 
   return (
@@ -76,13 +85,13 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
           {table.OrderDetails.filter(
             (item) => item.category === selectedCategory
           ).map((item, index) => (
-            <Card key={index} className="pt-2 hover:border-ring">
+            <Card key={index} className="pt-2 hover:border-ring flex flex-col">
               <CardHeader className="p-2">
                 <CardTitle className=" p-0 w-full text-center">
                   {item.name}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-grow w-full items-center gap-6 pb-2 ">
+              <CardContent className="flex flex-grow w-full items-center gap-6 pb-2 justify-center">
                 <article className="text-sm w-min  flex flex-col gap-1">
                   {Object.entries(item.sizes).map(([size]) => (
                     <span key={size} className="capitalize">
@@ -95,7 +104,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
                     <strong key={size}>₹{price}</strong>
                   ))}
                 </article>
-                <article className="text-sm w-min  flex flex-grow flex-col items-center gap-1">
+                <article className="text-sm w-min  flex flex-grow flex-col items-center  gap-1">
                   {Object.entries(item.sizes).map(([size, { quantity }]) => (
                     <span key={size} className="flex items-center w-full">
                       <Button

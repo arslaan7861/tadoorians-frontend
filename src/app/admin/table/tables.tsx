@@ -50,19 +50,20 @@ export default function RestaurantTables() {
         <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full justify-center items-center p-4">
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Card className="h-full w-full flex items-center justify-center capitalize">
-                {Object.entries(tables).length === 0 ? (
-                  <div className="flex flex-col items-center gap-2">
-                    <p>No tables added</p>
-                    <p>Tap to add</p>
-                  </div>
-                ) : (
-                  <>
-                    <Plus />
-                    Add Table
-                  </>
-                )}
-              </Card>
+              {Object.entries(tables).length === 0 ? (
+                <Card
+                  className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2
+                 left-1/2 h-full w-full flex items-center justify-center flex-col text-2xl font-extrabold rounded-none border-none bg-background"
+                >
+                  <p>No tables</p>
+                  <p>Tap to add</p>
+                </Card>
+              ) : (
+                <Card className="h-full w-full flex items-center justify-center capitalize ">
+                  <Plus />
+                  Add Table
+                </Card>
+              )}
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
