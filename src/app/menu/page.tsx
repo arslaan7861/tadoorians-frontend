@@ -19,13 +19,13 @@ async function PricePage() {
   const menu = await Dish.find({}).lean<MenuItem[]>();
   const categories = [...new Set(menu.map((i) => i.category))];
   return (
-    <>
+    <section className=" flex-grow flex-1 overflow-hidden">
       <Tabs
         defaultValue={categories[0]}
-        className="w-full h-full max-h-full max-w-full flex flex-col"
+        className="w-full max-h-full max-w-full flex flex-col "
       >
-        <nav className="w-full h-min overflow-x-auto md:scrollbar-none">
-          <TabsList className="hidden md:flex space-x-4 justify-start w-full bg-background">
+        <nav className="w-full h-min overflow-x-auto md:scrollbar-none z-50 shrink-0">
+          <TabsList className="hidden md:flex space-x-4 justify-start w-full bg-background ">
             {categories.map((c) => {
               return (
                 <TabsTrigger
@@ -59,7 +59,7 @@ async function PricePage() {
                   <ChevronDown className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-max bg-card mr-2">
+              <DropdownMenuContent className="w-max bg-card mr-2 z-10 shadow">
                 {[...categories].splice(3).map((c) => (
                   <DropdownMenuItem className="shadow-none" key={c}>
                     <TabsTrigger
@@ -108,7 +108,7 @@ async function PricePage() {
           </TabsContent>
         ))}
       </Tabs>
-    </>
+    </section>
   );
 }
 

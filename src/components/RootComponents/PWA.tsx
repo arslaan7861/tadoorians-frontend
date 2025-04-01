@@ -23,31 +23,31 @@ function PWA() {
   // );
 
   useEffect(() => {
+    async function registerServiceWorker() {
+      const registration = await navigator.serviceWorker.register("/sw.js", {
+        scope: "/",
+        updateViaCache: "all",
+      });
+      const sub = await registration.pushManager.getSubscription();
+      if (!sub) {
+        toast("Enable Notifications", {
+          description: "Get order updates and exclusive offers in real time.",
+          position: "top-center",
+          action: {
+            label: "Allow",
+            onClick: subscribeToPush,
+            children: <Button>Allow</Button>,
+          },
+        });
+        subscribeToPush();
+      }
+    }
     if ("serviceWorker" in navigator && "PushManager" in window) {
       registerServiceWorker();
     } else {
     }
   }, []);
 
-  async function registerServiceWorker() {
-    const registration = await navigator.serviceWorker.register("/sw.js", {
-      scope: "/",
-      updateViaCache: "all",
-    });
-    const sub = await registration.pushManager.getSubscription();
-    if (!sub) {
-      toast("Enable Notifications", {
-        description: "Get order updates and exclusive offers in real time.",
-        position: "top-center",
-        action: {
-          label: "Allow",
-          onClick: subscribeToPush,
-          children: <Button>Allow</Button>,
-        },
-      });
-      subscribeToPush();
-    }
-  }
   async function subscribeToPush() {
     try {
       const registration = await navigator.serviceWorker.ready;

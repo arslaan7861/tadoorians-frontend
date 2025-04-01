@@ -1,7 +1,6 @@
 "use client";
 import { tableType } from "@/utils/types";
 import React, { useEffect, useRef, useState } from "react";
-import { useReactToPrint } from "react-to-print";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import {
   Select,
@@ -61,10 +60,7 @@ function Billcard({ table }: { table: tableType }) {
     const amountPayable = Math.round(
       bill.totalAmount * (1 - values.discount / 100)
     );
-    // update bill to latest state
-    await dispatch(
-      updateBill({ ...bill, amountPayable, tablestamp: table.tablestamp })
-    );
+
     // create toast
     const toastId = toast.loading("Saving bill");
     if (isOffline()) {
@@ -78,7 +74,21 @@ function Billcard({ table }: { table: tableType }) {
     const respString = await saveBillServer({
       ...bill,
       tablestamp: table.tablestamp,
-    });
+      amountPayable,
+      discount: (bill.totalAmount * values.discount) / 100,
+      customerName: values.customerName,
+      credited: values.credited,
+    }); // update bill to latest state
+    await dispatch(
+      updateBill({
+        ...bill,
+        tablestamp: table.tablestamp,
+        amountPayable,
+        discount: (bill.totalAmount * values.discount) / 100,
+        customerName: values.customerName,
+        credited: values.credited,
+      })
+    );
     // check bill saved on server
     if (!respString)
       return toast.error("Something went wrong please try again..", {
@@ -93,19 +103,12 @@ function Billcard({ table }: { table: tableType }) {
         className: "bg-destructive text-destructive-foreground",
       });
     //print bill
-    printBill();
+    // printBill();
     console.log({ values });
+    router.push("/print?tablestamp=" + table.tablestamp);
+    toast.dismiss(toastId);
   }
-  const printBill = useReactToPrint({
-    contentRef: billRef,
-    onAfterPrint: async () => {
-      // await dispatch(EmptyTable(table.tableId));
-      router.replace("/admin/table");
-    },
-    onPrintError() {
-      console.log("not printed");
-    },
-  });
+
   return (
     <DialogContent>
       <DialogHeader>
@@ -115,7 +118,7 @@ function Billcard({ table }: { table: tableType }) {
         <span>Items</span>
         <span>price</span>
       </article>
-      <section className="max-h-80 sm:max-h-72  overflow-y-auto relative scrollbar-thin p-3">
+      <section className="max-h-[70vh] sm:max-h-72  overflow-y-auto relative scrollbar-thin p-3">
         <Table>
           <TableBody>
             {bill.billcontent.map((item, i) => {

@@ -13,7 +13,7 @@ async function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <StateProvider>
       <TableDataLoader />
-      <section className="flex flex-grow flex-1 overflow-hidden flex-col md:flex-row bg-">
+      <section className="flex flex-grow flex-1 overflow-hidden flex-col md:flex-row">
         <DesktopSidebar />
         <main className="relative w-full min-h-full flex-grow overflow-y-auto overflow-x-hidden md:scrollbar-none">
           {children}

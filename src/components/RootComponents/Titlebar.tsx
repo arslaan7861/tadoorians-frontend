@@ -6,7 +6,7 @@ function Titlebar() {
   return (
     <>
       {/* Title Bar */}
-      <header className="border-b shadow-sm h-16 bg-background">
+      <header className="border-b shadow-sm h-16 bg-background shrink-0">
         <div className="flex items-center justify-between h-full px-4 mx-auto">
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold text-textColor">

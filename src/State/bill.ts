@@ -7,7 +7,6 @@ const billslice = createSlice({
   initialState,
   reducers: {
     updateBill: (state, { payload }: PayloadAction<BillType>) => {
-      console.log({ tablestamp: payload.tablestamp });
       return payload;
     },
   },

@@ -18,6 +18,7 @@ export interface BillContentType {
   quantity: number;
   cost: number;
   size: string;
+  _id?: string;
 }
 export interface BillType {
   totalAmount: number;

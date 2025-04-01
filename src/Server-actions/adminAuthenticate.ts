@@ -2,23 +2,18 @@
 import connectDB from "@/DB";
 import AdminModel from "@/DB/creds";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 import { cookies } from "next/headers";
-const ADMIN_USERNAME = "adminusername";
-const ADMIN_PASSWORD = "password";
+const ADMIN_TOKEN = "adminToken";
 export async function ValidateAdmin() {
   try {
     const cookieStore = await cookies();
-    const adminusername = cookieStore.get(ADMIN_USERNAME)?.value;
-    const password = cookieStore.get(ADMIN_PASSWORD)?.value;
-    if (!adminusername || !password) return false;
-    await connectDB();
-    const admin = await AdminModel.findOne({
-      adminname: adminusername,
-    });
-    if (!admin) return false;
-    const isMatch = await bcrypt.compare(password, admin.password);
-    return isMatch;
+    const token = cookieStore.get(ADMIN_TOKEN)?.value;
+    if (!token) return false;
+    const res = await jwt.verify(token, process.env.JWT_SECRET as string);
+    if (!res) return false;
+    return true;
   } catch (error) {
     return false;
     console.log(error);
@@ -46,7 +41,7 @@ export async function loginAdmin({
       return {
         status: false,
         message: `Admin name ${adminusername} not found`,
-        field: ADMIN_USERNAME,
+        field: "adminusername",
       };
     const isMatch = await bcrypt.compare(password, admin.password);
 
@@ -54,13 +49,15 @@ export async function loginAdmin({
       return {
         status: false,
         message: `Wrong password`,
-        field: ADMIN_PASSWORD,
+        field: "password",
       };
     const cookieStore = await cookies();
-    cookieStore.set(ADMIN_USERNAME, adminusername, {
-      maxAge: 1000 * 60 * 60 * 24 * 365,
-    });
-    cookieStore.set(ADMIN_PASSWORD, password, {
+    const token = await jwt.sign(
+      { adminusername, role: "admin" },
+      process.env.JWT_SECRET as string,
+      { expiresIn: "30d" }
+    );
+    cookieStore.set(ADMIN_TOKEN, token, {
       maxAge: 1000 * 60 * 60 * 24 * 365,
     });
     return {

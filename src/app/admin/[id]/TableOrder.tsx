@@ -28,7 +28,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
   useEffect(() => {
     console.log("setting tables");
     setTable(tablesLenValid ? tables[tableId] : ({} as tableType));
-  }, [tables, tableId]);
+  }, [tables, tableId, tablesLenValid]);
 
   function increase(
     name: string, // Assuming each order has a unique 'id'

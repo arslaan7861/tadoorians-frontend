@@ -90,7 +90,7 @@ export function ItemForm({
         },
       });
     }
-  }, []);
+  }, [form, sizeInputs]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const toastId = toast.loading("Saving item");

@@ -58,7 +58,7 @@ export const ThemeProvider = ({
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
-  }, []);
+  }, [router, theme]);
   useEffect(() => {
     if (isOffline()) {
       return;
