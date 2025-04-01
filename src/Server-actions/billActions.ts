@@ -1,4 +1,5 @@
 "use server";
+import connectDB from "@/DB";
 import BillModel from "@/DB/billSchema";
 import { BillType } from "@/utils/types";
 
@@ -6,6 +7,7 @@ export async function saveBillServer(bill: BillType) {
   try {
     // await BillModel.deleteMany({});
     console.log(bill.tablestamp);
+    await connectDB();
     await BillModel.updateOne(
       { tablestamp: bill.tablestamp }, // Search for existing bill by tablestamp
       { $set: bill }, // Update or insert the dish
