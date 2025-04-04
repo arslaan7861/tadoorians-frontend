@@ -28,6 +28,7 @@ function Filters() {
   const [date, setDate] = useState<number>(
     initialDate ? Number(initialDate) : Date.now()
   );
+  const [currentDateRange, setCurrentDaterange] = useState("");
   const [dateType, setDateType] = useState<dateRangeType>(
     (initialDateType as dateRangeType) || "Monthly"
   );
@@ -41,10 +42,9 @@ function Filters() {
       case "Yearly":
         return format(date, "yyyy"); // Just the year like "2025"
       default:
-        return "";
+        return format(date, "MMMM");
     }
   }
-  const [currentDateRange, setCurrentDaterange] = useState("");
   useEffect(() => {
     console.log(dateType);
     setCurrentDaterange(formatDateRange());
@@ -53,7 +53,7 @@ function Filters() {
     if (date) params.set("date", String(date));
     if (dateType) params.set("dateType", dateType);
     router.push(`?${params.toString()}`);
-    toast.success("navigating ", { description: "?${params.toString()}" });
+    toast.success("navigating ", { description: `?${params.toString()}` });
   }, [date, dateType, paymentMethod]);
 
   return (

@@ -25,7 +25,7 @@ export async function settleCreditServer(tablestamp: number) {
     await connectDB();
     console.log({ tablestamp });
     const updatedBill = await BillModel.findOneAndUpdate(
-      { tablestamp: tablestamp + 1 },
+      { tablestamp: tablestamp },
       { credited: false },
       { new: true } // <-- returns the updated document
     );
