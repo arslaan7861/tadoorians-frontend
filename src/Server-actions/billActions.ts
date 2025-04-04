@@ -20,3 +20,21 @@ export async function saveBillServer(bill: BillType) {
     return JSON.stringify({ ok: false, message: "Unable to Save bill..." });
   }
 }
+export async function settleCreditServer(tablestamp: number) {
+  try {
+    console.log({ tablestamp });
+    const updatedBill = await BillModel.findOneAndUpdate(
+      { tablestamp: tablestamp + 1 },
+      { credited: false },
+      { new: true } // <-- returns the updated document
+    );
+    console.log({ updatedBill });
+
+    if (!updatedBill)
+      return { status: false, message: "No Credit in the record" };
+    return { status: true, message: "Removed Credit from record" };
+  } catch (error) {
+    console.log({ errorSettleBill: error });
+    return { status: false, message: "Something went wrong" };
+  }
+}

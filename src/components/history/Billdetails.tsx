@@ -1,7 +1,5 @@
 "use client";
-
 import { format } from "date-fns";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,6 +19,9 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { BillType } from "@/utils/types";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { settleCreditServer } from "@/Server-actions/billActions";
 
 interface BillDetailsProps {
   bill: BillType;
@@ -30,6 +31,20 @@ interface BillDetailsProps {
 
 export function BillDetails({ bill, children }: BillDetailsProps) {
   const [selectedBill, setSelectedBill] = useState<BillType | null>(null);
+  const router = useRouter();
+  async function settleCredit() {
+    const toastId = toast.loading("Removing credit Record");
+    try {
+      const { message, status } = await settleCreditServer(bill.tablestamp);
+      if (!status) return toast.error(message, { id: toastId });
+      toast.success(message, { id: toastId });
+      setSelectedBill(null);
+      router.refresh();
+    } catch (error) {
+      toast.error("Soemthing went wrong please try again", { id: toastId });
+      console.log({ errorSettleBill: error });
+    }
+  }
   return (
     <>
       <TableRow onClick={() => setSelectedBill(bill)}>{children}</TableRow>
@@ -124,7 +139,17 @@ export function BillDetails({ bill, children }: BillDetailsProps) {
             <Button variant="outline" onClick={() => setSelectedBill(null)}>
               Close
             </Button>
-            <Button>Print Bill</Button>
+            <Button
+              variant={"secondary"}
+              onClick={() =>
+                router.push("/admin/print?tablestamp=" + bill.tablestamp)
+              }
+            >
+              Print Bill
+            </Button>
+            {bill.credited && (
+              <Button onClick={settleCredit}>Settle credit</Button>
+            )}
           </div>
         </DialogContent>
       </Dialog>
