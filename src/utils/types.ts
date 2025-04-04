@@ -32,6 +32,8 @@ export interface BillType {
   amountPayable: number;
   timestamp: number;
   tablestamp: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 export interface BillModelType extends Document, BillType {}
 
@@ -77,3 +79,4 @@ export interface toastType {
 export interface CREDS {
   passsword: string | null;
 }
+export type dateRangeType = "Monthly" | "Daily" | "Yearly" | "Weekly";

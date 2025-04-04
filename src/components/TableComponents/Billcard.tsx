@@ -105,7 +105,8 @@ function Billcard({ table }: { table: tableType }) {
     //print bill
     // printBill();
     console.log({ values });
-    router.push("/print?tablestamp=" + table.tablestamp);
+    router.push("/admin/print?tablestamp=" + table.tablestamp);
+
     toast.dismiss(toastId);
   }
 

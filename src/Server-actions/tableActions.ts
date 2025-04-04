@@ -26,6 +26,7 @@ export async function EmptyTableOnServer(tableId: string) {
     if (!table) return JSON.stringify({ ok: false });
     table.OrderDetails = await getEmptyMenu();
     table.totalAmount = 0;
+    table.tablestamp = Date.now();
     table.totalDishes = 0;
     table.save();
     console.log("cleaned table ", tableId);

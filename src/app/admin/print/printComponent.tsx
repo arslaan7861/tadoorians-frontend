@@ -2,10 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { BillType } from "@/utils/types";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/State";
+import { EmptyTable } from "@/State/Tables";
 
 const ThermalBill = ({ bill }: { bill: BillType }) => {
   const [formattedDate, setFormattedDate] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     // Set the formatted date on the client side only
@@ -22,7 +26,10 @@ const ThermalBill = ({ bill }: { bill: BillType }) => {
     };
 
     loadPrintJS();
-    const timer = setTimeout(() => router.back(), 1000);
+    const timer = setTimeout(() => {
+      router.back();
+      dispatch(EmptyTable(bill.tableId));
+    }, 1000);
     return () => clearTimeout(timer);
   }, [router]);
 

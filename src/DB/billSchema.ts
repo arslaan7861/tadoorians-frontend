@@ -17,7 +17,7 @@ const BillSchema = new Schema<BillModelType>(
     credited: { type: Boolean, default: false },
     billcontent: { type: [BillContentSchema], required: true },
     discount: { type: Number, required: true },
-    customerName: { type: String },
+    customerName: { type: String, default: "Anonymous" },
     tablestamp: {
       type: Number,
       required: true,
