@@ -22,6 +22,7 @@ export async function saveBillServer(bill: BillType) {
 }
 export async function settleCreditServer(tablestamp: number) {
   try {
+    await connectDB();
     console.log({ tablestamp });
     const updatedBill = await BillModel.findOneAndUpdate(
       { tablestamp: tablestamp + 1 },
