@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Tandoorians",
     short_name: "Tandoorians",
     description: "A family resaurant",
-    start_url: "/admin",
+    start_url: "/admin/table",
     display: "standalone",
     background_color: "#ffffff",
     theme_color: "#000000",
