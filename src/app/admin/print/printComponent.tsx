@@ -88,7 +88,7 @@ const ThermalBill = ({ bill }: { bill: BillType }) => {
                 {item.size.toLowerCase()}
               </td>
               <td className="border p-1" align="right">
-                ₹{item.quantity * item.cost}
+                ₹{item.cost}
               </td>
             </tr>
           ))}
