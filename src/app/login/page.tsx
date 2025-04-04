@@ -58,7 +58,7 @@ const AdminLoginPage: React.FC = () => {
         id: toastId,
         description: "Redirecting to admin page",
       });
-      router.replace("/admin");
+      router.replace("/admin/table");
     } catch (error) {
       toast.error("Something went wrong", {
         id: toastId,
