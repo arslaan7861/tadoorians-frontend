@@ -14,6 +14,7 @@ import {
 import { Calendar } from "../ui/calendar";
 import { format, startOfMonth } from "date-fns";
 import { dateRangeType } from "@/utils/types";
+import { toast } from "sonner";
 
 function Filters() {
   const router = useRouter();
@@ -52,6 +53,7 @@ function Filters() {
     if (date) params.set("date", String(date));
     if (dateType) params.set("dateType", dateType);
     router.push(`?${params.toString()}`);
+    toast.success("navigating ", { description: "?${params.toString()}" });
   }, [date, dateType, paymentMethod]);
 
   return (
@@ -72,7 +74,7 @@ function Filters() {
             selected={new Date(date)}
             onSelect={(date) => {
               setDateType("Daily");
-              setDate(date?.getTime() as number);
+              setDate(date?.getTime() || Date.now());
             }}
             disabled={(date) => date > new Date()}
             onMonthChange={(month) => {
