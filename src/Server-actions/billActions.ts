@@ -11,7 +11,7 @@ export async function saveBillServer(bill: BillType) {
     await connectDB();
     await BillModel.updateOne(
       { tablestamp: bill.tablestamp }, // Search for existing bill by tablestamp
-      { $set: bill }, // Update or insert the dish
+      { $set: { ...bill } }, // Update or insert the dish
       { upsert: true } // If the dish doesn't exist, insert it
     );
     return JSON.stringify({ ok: true, message: "Saved bill" });

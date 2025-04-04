@@ -103,7 +103,12 @@ export default async function BillsPage(props: {
                     <BillDetails bill={bill} key={index}>
                       <TableCell>
                         {format(
-                          new Date(bill.createdAt as Date),
+                          new Date(bill.createdAt as Date).toLocaleString(
+                            "en-IN",
+                            {
+                              timeZone: "Asia/Kolkata",
+                            }
+                          ),
                           "dd MMM h:mm a"
                         )}
                       </TableCell>
