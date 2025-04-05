@@ -15,6 +15,7 @@ import { BillType, dateRangeType } from "@/utils/types";
 import BillModel from "@/DB/billSchema";
 import { BillDetails } from "@/components/history/Billdetails";
 import { FilterQuery } from "mongoose";
+import connectDB from "@/DB";
 
 export default async function BillsPage(props: {
   searchParams: Promise<{
@@ -58,6 +59,7 @@ export default async function BillsPage(props: {
       }
     }
   }
+  await connectDB();
 
   const bills = await BillModel.find({ ...filters, credited: true })
     .sort({ createdAt: -1 })

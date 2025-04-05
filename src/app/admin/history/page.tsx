@@ -15,6 +15,7 @@ import { BillContentType, BillType, dateRangeType } from "@/utils/types";
 import BillModel from "@/DB/billSchema";
 import { BillDetails } from "@/components/history/Billdetails";
 import { FilterQuery } from "mongoose";
+import connectDB from "@/DB";
 
 // Import the types from your interfaces
 
@@ -60,7 +61,7 @@ export default async function BillsPage(props: {
       }
     }
   }
-
+  await connectDB();
   const bills = await BillModel.find(filters).sort({ createdAt: -1 }).lean();
   const safeBills: BillType[] = bills.map((bill) => ({
     ...bill,
