@@ -86,7 +86,7 @@ export async function register({
     const hashedPassword = await bcrypt.hash(password, salt);
     await await AdminModel.updateOne(
       { adminname }, // Search for existing bill by tablestamp
-      { $set: { adminname, password } }, // Update or insert the dish
+      { $set: { adminname, password: hashedPassword } }, // Update or insert the dish
       { upsert: true } // If the dish doesn't exist, insert it
     );
     return {
