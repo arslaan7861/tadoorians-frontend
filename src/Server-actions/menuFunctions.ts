@@ -10,6 +10,7 @@ export async function NewMenu() {
   try {
     await connectDB();
     await Dish.deleteMany({}); // Optional if you want to reset the database
+    console.log("creating menu");
 
     // Use upsert to ensure uniqueness and prevent duplicates
     await Promise.all(
@@ -64,6 +65,14 @@ export async function addUpdateItem(item: MenuItem, _id: string) {
 export async function getEmptyMenu() {
   await connectDB();
   const menu = await Dish.find({}).lean<IDish[]>();
+  console.log(
+    "there are items" +
+      tandoorianMenu.length +
+      " in hard coded menu and " +
+      menu.length +
+      " in database"
+  );
+
   console.log([...new Set(menu)].length);
   return menu;
 }

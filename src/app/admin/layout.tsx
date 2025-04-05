@@ -8,6 +8,7 @@ import { ReactNode } from "react";
 
 async function AdminLayout({ children }: { children: ReactNode }) {
   const isAdmin = await ValidateAdmin();
+
   if (!isAdmin) redirect("/login");
 
   return (

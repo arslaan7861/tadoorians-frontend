@@ -74,3 +74,26 @@ export async function loginAdmin({
     };
   }
 }
+export async function register({
+  adminname,
+  password,
+}: {
+  adminname: string;
+  password: string;
+}) {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    await await AdminModel.updateOne(
+      { adminname }, // Search for existing bill by tablestamp
+      { $set: { adminname, password } }, // Update or insert the dish
+      { upsert: true } // If the dish doesn't exist, insert it
+    );
+    return {
+      status: true,
+      message: "created admin with username " + adminname,
+    };
+  } catch (error) {
+    console.log("error while registering admin", error);
+  }
+}

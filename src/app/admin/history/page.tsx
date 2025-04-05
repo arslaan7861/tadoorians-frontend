@@ -73,17 +73,9 @@ export default async function BillsPage(props: {
       })) ?? [],
   }));
   return (
-    // <main className="p-4 h-full">
-    //   <div className="flex flex-col space-y-6 h-full">
-    //     <div className="flex flex-col sm:flex-row items-center gap-5 justify-between">
-    //       <h3 className="font-bold tracking-tight text-left w-full">
-    //         Bill History
-    //       </h3>
-    //       <Filters />
-    //     </div>
     <section className="relative flex-grow overflow-y-auto">
       {bills.length <= 0 ? (
-        <h3 className="w-full h-full text-muted text-center text-2xl justify-center flex flex-grow  items-center">
+        <h3 className="w-full h-full text-muted-foreground text-center text-2xl justify-center flex flex-grow  items-center">
           No orders for this time range or bill type
         </h3>
       ) : (
@@ -126,7 +118,5 @@ export default async function BillsPage(props: {
         </table>
       )}
     </section>
-    //   </div>
-    // </main>
   );
 }

@@ -76,7 +76,7 @@ export default async function BillsPage(props: {
   return (
     <section className="relative flex-grow overflow-y-auto">
       {bills.length <= 0 ? (
-        <h3 className="w-full h-full text-muted text-center text-2xl justify-center flex flex-grow  items-center">
+        <h3 className="w-full h-full text-muted-foreground text-center text-2xl justify-center flex flex-grow  items-center">
           No Credits for this time range or bill type
         </h3>
       ) : (

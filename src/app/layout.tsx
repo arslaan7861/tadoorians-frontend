@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme/provider";
 import { Analytics } from "@vercel/analytics/react";
 import { getThemeCookie } from "@/Server-actions/getTheme";
 import PWA from "@/components/RootComponents/PWA";
+import { register } from "@/Server-actions/adminAuthenticate";
 // import { NewMenu } from "@/Server-actions/menuFunctions";
 
 interface RootLayoutProps {
