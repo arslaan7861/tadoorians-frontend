@@ -32,6 +32,7 @@ export async function loginAdmin({
   field: "adminusername" | "password" | "root" | `root.${string}`;
 }> {
   try {
+    console.log("logging in");
     await connectDB();
     // Hash the incoming password
     const admin = await AdminModel.findOne({
