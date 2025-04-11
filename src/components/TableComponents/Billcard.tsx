@@ -34,6 +34,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "../ui/sheet";
+import { ScrollArea } from "../ui/scroll-area";
 interface PaymentState {
   credited: boolean;
   paymentMethod: "cash" | "upi";
@@ -44,7 +45,6 @@ interface PaymentState {
 function Billcard({ table }: { table: tableType }) {
   const router = useRouter();
   const bill = useSelector((state: RootState) => state.bill);
-  const billRef = useRef<HTMLTableElement>(null);
   const dispatch = useDispatch<AppDispatch>();
   const [values, setValues] = useState<PaymentState>({
     credited: false,
@@ -119,9 +119,32 @@ function Billcard({ table }: { table: tableType }) {
       <SheetHeader>
         <SheetTitle> Table {table.tableId} bill</SheetTitle>
       </SheetHeader>
-      <SheetDescription className="w-full border grow"></SheetDescription>
+      <SheetDescription className="w-full grow overflow-y-auto" asChild>
+        <ScrollArea className="p-4">
+          <table className="text-xs sm:text-sm w-full border-collapse h-min">
+            <thead className="sticky top-0 z-10 bg-background text-card-foreground">
+              <tr>
+                <th className="px-1  text-left">Item</th>
+                <th className="px-1  text-right">Total price</th>
+              </tr>
+            </thead>
+            <TableBody className="">
+              {bill.billcontent.map((item, i) => {
+                return (
+                  <TableRow key={i}>
+                    <TableCell className="">
+                      {item.size} {item.name}x{item.quantity}
+                    </TableCell>
+                    <TableCell className="text-right">{item.cost}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </table>
+        </ScrollArea>
+      </SheetDescription>
       <SheetFooter>
-        <Button></Button>
+        <Button onClick={handlePrint}>Print</Button>
       </SheetFooter>
     </SheetContent>
   );
