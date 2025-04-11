@@ -7,6 +7,7 @@ import { AppDispatch } from "@/State";
 import { Download, LoaderCircle, Printer } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Sheet, SheetTrigger } from "../ui/sheet";
 
 interface propsType {
   table: tableType;
@@ -49,16 +50,14 @@ function BillInfo({ table, isUpdated, setIsupdated }: propsType) {
               )}
             </Button>
           ) : (
-            <Dialog>
+            <Sheet modal>
               <span className="flex-grow flex justify-end">
-                <DialogTrigger asChild>
-                  <Button>
-                    <Printer className="text-xs" /> Print Bill
-                  </Button>
-                </DialogTrigger>
+                <SheetTrigger asChild>
+                  <Button>Bill summary</Button>
+                </SheetTrigger>
               </span>
               <RestaurantBillCard table={table} />
-            </Dialog>
+            </Sheet>
           )}
         </article>
       </section>
