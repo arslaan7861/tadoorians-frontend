@@ -16,6 +16,7 @@ import BillModel from "@/DB/billSchema";
 import { BillDetails } from "@/components/history/Billdetails";
 import { FilterQuery } from "mongoose";
 import connectDB from "@/DB";
+import { getIndianTimestamp } from "@/utils/tableFunctions";
 
 export default async function BillsPage(props: {
   searchParams: Promise<{
@@ -34,27 +35,27 @@ export default async function BillsPage(props: {
   if (date) {
     const parsedDate = new Date(Number(date)); // your query string was timestamp (number)
     if (!isNaN(parsedDate.getTime())) {
-      filters.createdAt = {};
+      filters.timestamp = {};
 
       switch (dateType) {
         case "Daily":
-          filters.createdAt.$gte = startOfDay(parsedDate);
-          filters.createdAt.$lte = endOfDay(parsedDate);
+          filters.timestamp.$gte = startOfDay(parsedDate);
+          filters.timestamp.$lte = endOfDay(parsedDate);
           break;
 
         case "Monthly":
-          filters.createdAt.$gte = startOfMonth(parsedDate);
-          filters.createdAt.$lte = endOfMonth(parsedDate);
+          filters.timestamp.$gte = startOfMonth(parsedDate);
+          filters.timestamp.$lte = endOfMonth(parsedDate);
           break;
 
         case "Yearly":
-          filters.createdAt.$gte = startOfYear(parsedDate);
-          filters.createdAt.$lte = endOfYear(parsedDate);
+          filters.timestamp.$gte = startOfYear(parsedDate);
+          filters.timestamp.$lte = endOfYear(parsedDate);
           break;
 
         case "Weekly":
-          filters.createdAt.$gte = startOfWeek(parsedDate);
-          filters.createdAt.$lte = endOfWeek(parsedDate);
+          filters.timestamp.$gte = startOfWeek(parsedDate);
+          filters.timestamp.$lte = endOfWeek(parsedDate);
           break;
       }
     }
@@ -96,9 +97,7 @@ export default async function BillsPage(props: {
                 <BillDetails bill={bill} key={index}>
                   <TableCell>
                     {format(
-                      new Date(bill.createdAt as Date).toLocaleString("en-IN", {
-                        timeZone: "Asia/Kolkata",
-                      }),
+                      new Date(getIndianTimestamp(bill.timestamp)),
                       "dd MMM h:mm a"
                     )}
                   </TableCell>

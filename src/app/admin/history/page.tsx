@@ -16,6 +16,7 @@ import BillModel from "@/DB/billSchema";
 import { BillDetails } from "@/components/history/Billdetails";
 import { FilterQuery } from "mongoose";
 import connectDB from "@/DB";
+import { getIndianTimestamp } from "@/utils/tableFunctions";
 
 // Import the types from your interfaces
 
@@ -94,10 +95,7 @@ export default async function BillsPage(props: {
                 <BillDetails bill={bill} key={index}>
                   <TableCell>
                     {format(
-                      new Date(
-                        new Date(bill.timestamp).getTime() +
-                          5.5 * 60 * 60 * 1000
-                      ),
+                      new Date(getIndianTimestamp(bill.timestamp)),
                       "dd MMM h:mm a"
                     )}
                   </TableCell>

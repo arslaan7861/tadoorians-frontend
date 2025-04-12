@@ -33,3 +33,15 @@ export function calculateAmountAndDishes(table: tableType): {
     bill: { ...bill, tableId, totalAmount, totalDishes },
   };
 }
+
+export function getIndianTimestamp(timestamp: number | string) {
+  const date = new Date(timestamp);
+
+  // If the local timezone is IST (UTC+5:30), just format directly
+  const isIST = date.getTimezoneOffset() === -330;
+
+  const dateInIST = isIST
+    ? date
+    : new Date(date.getTime() + 5.5 * 60 * 60 * 1000);
+  return dateInIST.getTime();
+}
