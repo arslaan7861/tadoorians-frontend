@@ -83,9 +83,9 @@ export default async function BillsPage(props: {
         <table className="text-xs sm:text-sm w-full border-collapse">
           <thead className="sticky top-0 z-10 bg-background">
             <tr>
-              <th className="px-1  text-left">Date & Time</th>
+              <th className="px-1  text-left">Time</th>
               <th className="px-1  text-left">Customer</th>
-              <th className="px-1  text-left">Table ID</th>
+              <th className="px-1  text-left">Table</th>
               <th className="px-1  text-left">Payment</th>
               <th className=" px-1 text-right">Amount</th>
             </tr>
@@ -104,10 +104,10 @@ export default async function BillsPage(props: {
                   </TableCell>
                   <TableCell>{bill.customerName}</TableCell>
                   <TableCell>{bill.tableId}</TableCell>
-
                   <TableCell>
-                    <span className="capitalize">{bill.paymentMethod}</span>
-                    {bill.credited && " (C)"}
+                    <span className="capitalize">
+                      {bill.credited ? "Credit" : bill.paymentMethod}
+                    </span>
                   </TableCell>
                   <TableCell className="text-right">
                     ₹{bill.amountPayable.toFixed(2)}

@@ -7,7 +7,9 @@ import { AppDispatch } from "@/State";
 import { EmptyTable } from "@/State/Tables";
 
 const ThermalBill = ({ bill }: { bill: BillType }) => {
-  const [formattedDate, setFormattedDate] = useState("");
+  const [formattedDate, setFormattedDate] = useState(
+    new Date(bill.tablestamp).toLocaleString()
+  );
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -27,11 +29,11 @@ const ThermalBill = ({ bill }: { bill: BillType }) => {
 
     loadPrintJS();
     const timer = setTimeout(() => {
-      router.back();
+      router.replace("/admin/table");
       dispatch(EmptyTable(bill.tableId));
     }, 1000);
     return () => clearTimeout(timer);
-  }, [router]);
+  }, [router, dispatch, bill.tableId]);
 
   return (
     <div
@@ -39,18 +41,19 @@ const ThermalBill = ({ bill }: { bill: BillType }) => {
       className="p-4 font-mono text-black bg-white w-full"
     >
       {/* Header */}
-      <h3 className="text-center font-bold text-lg">TANDOORIANS RESTAURANT</h3>
+      <h3 className="text-center font-bold text-lg">
+        TANDOORIANS <p>Family restaurant</p>
+      </h3>
       <hr />
-
       {/* Customer Info */}
       {bill.customerName && (
         <p>
-          <strong>Customer:</strong> {bill.customerName}{" "}
-          {bill.credited && <strong>(Credited)</strong>}
+          <strong>Customer:</strong> {bill.customerName}
         </p>
       )}
       <p>
-        <strong>Payment:</strong> {bill.paymentMethod.toUpperCase()}
+        <strong>Payment:</strong>{" "}
+        {bill.credited ? "Credit" : bill.paymentMethod.toUpperCase()}
       </p>
       <p>
         <strong>Time:</strong> {formattedDate || "Loading..."}

@@ -4,10 +4,10 @@ import { tableType } from "@/utils/types";
 import { useDispatch } from "react-redux";
 import { updateTable } from "@/State/Tables";
 import { AppDispatch } from "@/State";
-import { Download, LoaderCircle, Printer } from "lucide-react";
+import { Download, LoaderCircle } from "lucide-react";
 import { Button } from "../ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Sheet, SheetTrigger } from "../ui/sheet";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface propsType {
   table: tableType;
@@ -17,6 +17,11 @@ interface propsType {
 function BillInfo({ table, isUpdated, setIsupdated }: propsType) {
   const dispatch = useDispatch<AppDispatch>();
   const [isUpdating, setIsUpdating] = useState(false);
+  const searchparams = useSearchParams();
+  const router = useRouter();
+  console.log(searchparams.get("sheet"));
+
+  const SheetOpen = !!searchparams.get("sheet");
   const updateOrder = async () => {
     console.log("updating table");
     setIsUpdating(true);
@@ -24,6 +29,15 @@ function BillInfo({ table, isUpdated, setIsupdated }: propsType) {
     setIsUpdating(false);
     setIsupdated(true);
     console.log("updated");
+  };
+  const handleOpenChange = (open: boolean) => {
+    const url = new URL(window.location.href);
+    if (open) {
+      url.searchParams.set("sheet", table.tableId);
+    } else {
+      url.searchParams.delete("sheet");
+    }
+    router.push(url.toString(), { scroll: false });
   };
   return (
     <>
@@ -50,9 +64,9 @@ function BillInfo({ table, isUpdated, setIsupdated }: propsType) {
               )}
             </Button>
           ) : (
-            <Sheet modal>
+            <Sheet open={SheetOpen} onOpenChange={handleOpenChange}>
               <span className="flex-grow flex justify-end">
-                <SheetTrigger asChild>
+                <SheetTrigger onClick={() => handleOpenChange(true)} asChild>
                   <Button>Bill summary</Button>
                 </SheetTrigger>
               </span>

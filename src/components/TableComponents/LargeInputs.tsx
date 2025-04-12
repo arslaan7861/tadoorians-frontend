@@ -13,7 +13,7 @@ function LargeInputs({
   const [sizes, setSizes] = useState(item.sizes);
   return (
     <>
-      {Object.entries(sizes).map(([size, { quantity, price }]) => {
+      {Object.entries(sizes).map(([size, { price }]) => {
         return (
           <form
             key={size}
@@ -32,7 +32,6 @@ function LargeInputs({
               type="number"
               className="max-w-16 "
               onChange={(e) => {
-                e.target.value;
                 setSizes((prev) => ({
                   ...prev,
                   [size]: { ...prev[size], quantity: Number(e.target.value) },

@@ -16,10 +16,10 @@ export async function saveBillServer(bill: BillType) {
       { $set: { ...bill } }, // Update or insert the dish
       { upsert: true } // If the dish doesn't exist, insert it
     );
-    return JSON.stringify({ ok: true, message: "Saved bill" });
+    return { ok: true, message: "Saved bill" };
   } catch (error) {
     console.log(error);
-    return JSON.stringify({ ok: false, message: "Unable to Save bill..." });
+    return { ok: false, message: "Unable to Save bill..." };
   }
 }
 export async function settleCreditServer(tablestamp: number) {
