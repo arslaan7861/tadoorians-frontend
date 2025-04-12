@@ -6,7 +6,7 @@ import { BillType } from "@/utils/types";
 export async function saveBillServer(bill: BillType) {
   try {
     // console.log("deleting all the bills");
-    // return await BillModel.deleteMany({});
+
     bill.customerName = bill.customerName ? bill.customerName : "Anonymous";
     console.log(bill.tablestamp);
     await connectDB();
