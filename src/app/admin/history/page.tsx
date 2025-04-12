@@ -36,33 +36,32 @@ export default async function BillsPage(props: {
   if (date) {
     const parsedDate = new Date(Number(date)); // your query string was timestamp (number)
     if (!isNaN(parsedDate.getTime())) {
-      filters.createdAt = {};
+      filters.timestamp = {};
 
       switch (dateType) {
         case "Daily":
-          filters.createdAt.$gte = startOfDay(parsedDate);
-          filters.createdAt.$lte = endOfDay(parsedDate);
+          filters.timestamp.$gte = startOfDay(parsedDate).getSeconds();
+          filters.timestamp.$lte = endOfDay(parsedDate).getTime();
           break;
-
         case "Monthly":
-          filters.createdAt.$gte = startOfMonth(parsedDate);
-          filters.createdAt.$lte = endOfMonth(parsedDate);
+          filters.timestamp.$gte = startOfMonth(parsedDate).getTime();
+          filters.timestamp.$lte = endOfMonth(parsedDate).getTime();
           break;
 
         case "Yearly":
-          filters.createdAt.$gte = startOfYear(parsedDate);
-          filters.createdAt.$lte = endOfYear(parsedDate);
+          filters.timestamp.$gte = startOfYear(parsedDate).getTime();
+          filters.timestamp.$lte = endOfYear(parsedDate).getTime();
           break;
 
         case "Weekly":
-          filters.createdAt.$gte = startOfWeek(parsedDate);
-          filters.createdAt.$lte = endOfWeek(parsedDate);
+          filters.timestamp.$gte = startOfWeek(parsedDate).getTime();
+          filters.timestamp.$lte = endOfWeek(parsedDate).getTime();
           break;
       }
     }
   }
   await connectDB();
-  const bills = await BillModel.find(filters).sort({ createdAt: -1 }).lean();
+  const bills = await BillModel.find(filters).sort({ timestamp: -1 }).lean();
   const safeBills: BillType[] = bills.map((bill) => ({
     ...bill,
     _id: JSON.stringify(bill._id), // convert ObjectId to string
@@ -94,12 +93,7 @@ export default async function BillsPage(props: {
               return (
                 <BillDetails bill={bill} key={index}>
                   <TableCell>
-                    {format(
-                      new Date(bill.createdAt as Date).toLocaleString("en-IN", {
-                        timeZone: "Asia/Kolkata",
-                      }),
-                      "dd MMM h:mm a"
-                    )}
+                    {format(new Date(bill.timestamp), "dd MMM h:mm a")}
                   </TableCell>
                   <TableCell>{bill.customerName}</TableCell>
                   <TableCell>{bill.tableId}</TableCell>
@@ -110,7 +104,7 @@ export default async function BillsPage(props: {
                     </span>
                   </TableCell>
                   <TableCell className="text-right">
-                    ₹{bill.amountPayable.toFixed(2)}
+                    ₹{bill.amountPayable}
                   </TableCell>
                 </BillDetails>
               );

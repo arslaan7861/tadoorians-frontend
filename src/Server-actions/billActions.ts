@@ -6,7 +6,6 @@ import { BillType } from "@/utils/types";
 export async function saveBillServer(bill: BillType) {
   try {
     // console.log("deleting all the bills");
-
     // return await BillModel.deleteMany({});
     bill.customerName = bill.customerName ? bill.customerName : "Anonymous";
     console.log(bill.tablestamp);
@@ -31,8 +30,6 @@ export async function settleCreditServer(tablestamp: number) {
       { credited: false },
       { new: true } // <-- returns the updated document
     );
-    console.log({ updatedBill });
-
     if (!updatedBill)
       return { status: false, message: "No Credit in the record" };
     return { status: true, message: "Removed Credit from record" };

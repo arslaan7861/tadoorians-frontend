@@ -27,7 +27,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
 import { ScrollArea } from "../ui/scroll-area";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
@@ -68,7 +67,6 @@ function Billcard({ table }: { table: tableType }) {
     // calculate totals
     const { bill } = calculateAmountAndDishes(table);
     const amountPayable = bill.totalAmount - discount;
-
     // create toast
     const toastId = toast.loading("Saving bill");
     if (isOffline()) {
@@ -86,6 +84,7 @@ function Billcard({ table }: { table: tableType }) {
       discount,
       customerName: values.customerName,
       credited: values.credited,
+      timestamp: Date.now(),
     });
     // update bill to latest state
     await dispatch(
@@ -105,9 +104,6 @@ function Billcard({ table }: { table: tableType }) {
         id: toastId,
         className: "bg-destructive text-destructive-foreground",
       });
-    //print bill
-    // printBill();
-    console.log({ values });
     router.replace("/admin/print?tablestamp=" + table.tablestamp);
     toast.dismiss(toastId);
   }
