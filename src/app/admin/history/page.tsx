@@ -93,7 +93,13 @@ export default async function BillsPage(props: {
               return (
                 <BillDetails bill={bill} key={index}>
                   <TableCell>
-                    {format(new Date(bill.timestamp), "dd MMM h:mm a")}
+                    {format(
+                      new Date(
+                        new Date(bill.timestamp).getTime() +
+                          5.5 * 60 * 60 * 1000
+                      ),
+                      "dd MMM h:mm a"
+                    )}
                   </TableCell>
                   <TableCell>{bill.customerName}</TableCell>
                   <TableCell>{bill.tableId}</TableCell>
