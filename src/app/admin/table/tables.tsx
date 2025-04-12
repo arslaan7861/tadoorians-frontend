@@ -15,7 +15,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 import {
   Card,
@@ -32,10 +31,14 @@ import { updateBill } from "@/State/bill";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function RestaurantTables() {
   const { tables } = useSelector((state: RootState) => state.tables);
   const dispatch = useDispatch<AppDispatch>();
+  const searchparams = useSearchParams();
+  const SheetId = searchparams.get("sheet");
   const [newTableName, setNewTableName] = useState("");
   function addNewTable() {
     if (!newTableName.length) return toast.error("Please enter table name");
@@ -43,7 +46,17 @@ export default function RestaurantTables() {
     dispatch(addTable(tableId));
     setNewTableName("");
   }
+  const router = useRouter();
 
+  const handleOpenChange = (open: boolean, tableId: string) => {
+    const url = new URL(window.location.href);
+    if (open) {
+      url.searchParams.set("sheet", tableId);
+    } else {
+      url.searchParams.delete("sheet");
+    }
+    router.push(url.toString(), { scroll: false });
+  };
   return (
     <div className="bg-background text-textColor flex flex-col items-center justify-center w-full overflow">
       {
@@ -181,12 +194,15 @@ export default function RestaurantTables() {
                   </AlertDialogContent>
                 </AlertDialog>
 
-                <Dialog
-                  // open={isopen === number}
-                  // onOpenChange={() => setIsOPen(number)}
+                <Sheet
+                  open={!!SheetId && SheetId === data.tableId}
+                  onOpenChange={(d) => handleOpenChange(d, data.tableId)}
                   defaultOpen={false}
                 >
-                  <DialogTrigger asChild>
+                  <SheetTrigger
+                    onClick={() => handleOpenChange(true, data.tableId)}
+                    asChild
+                  >
                     <Button
                       className="z-20"
                       variant="outline"
@@ -200,9 +216,9 @@ export default function RestaurantTables() {
                     >
                       <Calculator />
                     </Button>
-                  </DialogTrigger>
+                  </SheetTrigger>
                   <Billcard table={data} />
-                </Dialog>
+                </Sheet>
               </CardFooter>
             </Card>
           ))}

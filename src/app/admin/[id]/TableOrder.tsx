@@ -9,6 +9,7 @@ import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { tableType } from "@/utils/types";
 import TableLoading from "./loading";
+import LargeInputs from "@/components/TableComponents/LargeInputs";
 
 export default function RestaurantMenu({ tableId }: { tableId: string }) {
   const [mounted, setMounted] = useState(false);
@@ -81,7 +82,7 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
         setSelectedCategory={setSelectedCategory}
       />
       <section className="w-full flex-grow overflow-y-auto sm:scrollbar-none">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full overflow-y-auto md:scrollbar-none p-4 ">
+        <div className="pb-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full overflow-y-auto md:scrollbar-none p-4 ">
           {table.OrderDetails.filter(
             (item) => item.category === selectedCategory
           ).map((item, index) => (
@@ -91,50 +92,92 @@ export default function RestaurantMenu({ tableId }: { tableId: string }) {
                   {item.name}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-grow w-full items-center gap-6 pb-2 justify-center">
-                <article className="text-sm w-min  flex flex-col gap-1">
-                  {Object.entries(item.sizes).map(([size]) => (
-                    <span key={size} className="capitalize">
-                      {size}
-                    </span>
-                  ))}
-                </article>
-                <article className="text-sm w-min  flex flex-col gap-1">
-                  {Object.entries(item.sizes).map(([size, { price }]) => (
-                    <strong key={size}>₹{price}</strong>
-                  ))}
-                </article>
-                <article className="text-sm w-min  flex flex-grow flex-col items-center  gap-1">
-                  {Object.entries(item.sizes).map(([size, { quantity }]) => (
-                    <span key={size} className="flex items-center w-full">
-                      <Button
-                        asChild
-                        size={"icon"}
-                        className="h-6 p-1"
-                        variant={"ghost"}
-                        onClick={() => {
-                          if (quantity > 0)
-                            increase(item.name, size, quantity - 1, item.count);
-                        }}
-                        disabled={quantity <= 0}
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="flex-grow text-center"> {quantity}</span>
-                      <Button
-                        asChild
-                        size={"icon"}
-                        className="h-6 p-1"
-                        variant={"ghost"}
-                        onClick={() =>
-                          increase(item.name, size, quantity + 1, item.count)
-                        }
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </span>
-                  ))}
-                </article>
+              <CardContent className="flex flex-grow flex-col w-full items-center gap-2 py-2 justify-center">
+                {item.name == "Roti" ? (
+                  <LargeInputs increase={increase} item={item}></LargeInputs>
+                ) : (
+                  <>
+                    {Object.entries(item.sizes).map(([size, { quantity }]) => {
+                      return (
+                        <article
+                          key={size}
+                          className="flex items-center justify-between w-full text-sm"
+                        >
+                          <span>
+                            {size} x {quantity}
+                          </span>
+                          <p className=" grow  justify-end gap-3 flex">
+                            <Button
+                              variant={"destructive"}
+                              className="h-9 md:h-7 px-2 gap-0"
+                              onClick={() => {
+                                if (quantity > 0 && quantity < 5)
+                                  return increase(
+                                    item.name,
+                                    size,
+                                    0,
+                                    item.count
+                                  );
+                                if (quantity > 0)
+                                  increase(
+                                    item.name,
+                                    size,
+                                    quantity - 5,
+                                    item.count
+                                  );
+                              }}
+                              disabled={quantity <= 0}
+                            >
+                              <Minus /> 5
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                if (quantity > 0)
+                                  increase(
+                                    item.name,
+                                    size,
+                                    quantity - 1,
+                                    item.count
+                                  );
+                              }}
+                              disabled={quantity <= 0}
+                              variant={"destructive"}
+                              className="h-9 w-9 md:h-7 md:w-7"
+                            >
+                              <Minus />
+                            </Button>{" "}
+                            <Button
+                              onClick={() => {
+                                increase(
+                                  item.name,
+                                  size,
+                                  quantity + 1,
+                                  item.count
+                                );
+                              }}
+                              className="h-9 w-9 md:h-7 md:w-7"
+                            >
+                              <Plus />
+                            </Button>{" "}
+                            <Button
+                              onClick={() => {
+                                increase(
+                                  item.name,
+                                  size,
+                                  quantity + 5,
+                                  item.count
+                                );
+                              }}
+                              className="h-9 md:h-7 px-2 gap-0"
+                            >
+                              <Plus />5
+                            </Button>
+                          </p>
+                        </article>
+                      );
+                    })}
+                  </>
+                )}
               </CardContent>
               {/* <CardFooter></CardFooter> */}
             </Card>

@@ -53,7 +53,7 @@ function CategorySelectNav({
           </Button>
         ))}
         <DropdownMenu>
-          <DropdownMenuTrigger className="border-none" asChild>
+          <DropdownMenuTrigger className="border-none shadow-none" asChild>
             <Button
               variant="outline"
               className={`flex items-center space-x-1${
@@ -73,10 +73,8 @@ function CategorySelectNav({
               <DropdownMenuItem key={category}>
                 <Button
                   variant={"ghost"}
-                  className={`hover:bg-card rounded-none ${
-                    selectedCategory === category
-                      ? "border-primary text-primary border-b"
-                      : "border-transparent"
+                  className={`hover:bg-card rounded-none w-full justify-start ${
+                    selectedCategory === category && " text-primary"
                   }`}
                   onClick={() => setSelectedCategory(category)}
                 >

@@ -9,7 +9,7 @@ function creditLayout({ children }: { children: React.ReactNode }) {
           <h3 className="font-bold tracking-tight text-left w-full">
             Credits record
           </h3>
-          <Filters />
+          <Filters credit />
         </div>
         {children}
       </div>

@@ -16,6 +16,7 @@ import BillModel from "@/DB/billSchema";
 import { BillDetails } from "@/components/history/Billdetails";
 import { FilterQuery } from "mongoose";
 import connectDB from "@/DB";
+import { getIndianTimestamp } from "@/utils/tableFunctions";
 
 export default async function BillsPage(props: {
   searchParams: Promise<{
@@ -34,27 +35,27 @@ export default async function BillsPage(props: {
   if (date) {
     const parsedDate = new Date(Number(date)); // your query string was timestamp (number)
     if (!isNaN(parsedDate.getTime())) {
-      filters.createdAt = {};
+      filters.timestamp = {};
 
       switch (dateType) {
         case "Daily":
-          filters.createdAt.$gte = startOfDay(parsedDate);
-          filters.createdAt.$lte = endOfDay(parsedDate);
+          filters.timestamp.$gte = startOfDay(parsedDate);
+          filters.timestamp.$lte = endOfDay(parsedDate);
           break;
 
         case "Monthly":
-          filters.createdAt.$gte = startOfMonth(parsedDate);
-          filters.createdAt.$lte = endOfMonth(parsedDate);
+          filters.timestamp.$gte = startOfMonth(parsedDate);
+          filters.timestamp.$lte = endOfMonth(parsedDate);
           break;
 
         case "Yearly":
-          filters.createdAt.$gte = startOfYear(parsedDate);
-          filters.createdAt.$lte = endOfYear(parsedDate);
+          filters.timestamp.$gte = startOfYear(parsedDate);
+          filters.timestamp.$lte = endOfYear(parsedDate);
           break;
 
         case "Weekly":
-          filters.createdAt.$gte = startOfWeek(parsedDate);
-          filters.createdAt.$lte = endOfWeek(parsedDate);
+          filters.timestamp.$gte = startOfWeek(parsedDate);
+          filters.timestamp.$lte = endOfWeek(parsedDate);
           break;
       }
     }
@@ -83,9 +84,9 @@ export default async function BillsPage(props: {
         <table className="text-xs sm:text-sm w-full border-collapse">
           <thead className="sticky top-0 z-10 bg-background">
             <tr>
-              <th className="px-1  text-left">Date & Time</th>
+              <th className="px-1  text-left">Time</th>
               <th className="px-1  text-left">Customer</th>
-              <th className="px-1  text-left">Table ID</th>
+              <th className="px-1  text-left">Table</th>
               <th className="px-1  text-left">Payment</th>
               <th className=" px-1 text-right">Amount</th>
             </tr>
@@ -96,18 +97,16 @@ export default async function BillsPage(props: {
                 <BillDetails bill={bill} key={index}>
                   <TableCell>
                     {format(
-                      new Date(bill.createdAt as Date).toLocaleString("en-IN", {
-                        timeZone: "Asia/Kolkata",
-                      }),
+                      new Date(getIndianTimestamp(bill.timestamp)),
                       "dd MMM h:mm a"
                     )}
                   </TableCell>
                   <TableCell>{bill.customerName}</TableCell>
                   <TableCell>{bill.tableId}</TableCell>
-
                   <TableCell>
-                    <span className="capitalize">{bill.paymentMethod}</span>
-                    {bill.credited && " (C)"}
+                    <span className="capitalize">
+                      {bill.credited ? "Credit" : bill.paymentMethod}
+                    </span>
                   </TableCell>
                   <TableCell className="text-right">
                     ₹{bill.amountPayable.toFixed(2)}

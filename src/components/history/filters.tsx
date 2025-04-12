@@ -15,7 +15,7 @@ import { Calendar } from "../ui/calendar";
 import { format, startOfMonth } from "date-fns";
 import { dateRangeType } from "@/utils/types";
 
-function Filters() {
+function Filters({ credit }: { credit?: true }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -109,28 +109,32 @@ function Filters() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="text-xs">
-            {paymentMethod ? paymentMethod : "Payment"}
-            <ChevronDown className="ml-2 h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="text-xs">
-          <DropdownMenuRadioGroup
-            value={paymentMethod}
-            onValueChange={(value) => {
-              setPaymentMethod(value);
-            }}
-          >
-            <DropdownMenuRadioItem value="">Payment</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="cash">
-              Cash Only
-            </DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="upi">UPI Only</DropdownMenuRadioItem>
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {!credit && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="text-xs">
+              {paymentMethod ? paymentMethod : "Payment"}
+              <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="text-xs">
+            <DropdownMenuRadioGroup
+              value={paymentMethod}
+              onValueChange={(value) => {
+                setPaymentMethod(value);
+              }}
+            >
+              <DropdownMenuRadioItem value="">Payment</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="cash">
+                Cash Only
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="upi">
+                UPI Only
+              </DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </div>
   );
 }

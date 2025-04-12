@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme/provider";
 import { Analytics } from "@vercel/analytics/react";
 import { getThemeCookie } from "@/Server-actions/getTheme";
 import PWA from "@/components/RootComponents/PWA";
+// import BillModel from "@/DB/billSchema";
 // import { register } from "@/Server-actions/adminAuthenticate";
 // import { NewMenu } from "@/Server-actions/menuFunctions";
 
@@ -16,6 +17,7 @@ interface RootLayoutProps {
 export default async function RootLayout({ children }: RootLayoutProps) {
   const userTheme = (await getThemeCookie()) || "light";
   // await NewMenu();
+  // return await BillModel.deleteMany({});
   return (
     <ThemeProvider userTheme={userTheme}>
       <PWA />
