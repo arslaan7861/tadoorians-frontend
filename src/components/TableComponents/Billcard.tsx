@@ -83,7 +83,7 @@ function Billcard({ table }: { table: tableType }) {
       ...bill,
       tablestamp: table.tablestamp,
       amountPayable,
-      discount: (bill.totalAmount * discount) / 100,
+      discount,
       customerName: values.customerName,
       credited: values.credited,
     });
