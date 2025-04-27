@@ -1,4 +1,5 @@
 "use server";
+import connectDB from "@/DB";
 import BillModel from "@/DB/billSchema";
 import { formatDate } from "date-fns";
 export interface sevenDaysDataType {
@@ -21,7 +22,7 @@ export const getSalesData = async ({
 }) => {
   console.log("today", formatDate(start, "dd MMM"));
   console.log("sevenDaysAgo", formatDate(end, "dd MMM"));
-
+  await connectDB();
   const pastSevenDaysData = await BillModel.aggregate([
     {
       $match: {
