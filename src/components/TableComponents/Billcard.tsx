@@ -77,15 +77,19 @@ function Billcard({ table }: { table: tableType }) {
       return;
     }
     //save bill on server
-    const resp = await saveBillServer({
-      ...bill,
-      tablestamp: table.tablestamp,
-      amountPayable,
-      discount,
-      customerName: values.customerName,
-      credited: values.credited,
-      timestamp: Date.now(),
-    });
+    const resp = await saveBillServer(
+      {
+        ...bill,
+        tablestamp: table.tablestamp,
+        amountPayable,
+        discount,
+        customerName: values.customerName,
+        credited: values.credited,
+        timestamp: Date.now(),
+        paymentMethod: values.paymentMethod,
+      },
+      Date.now()
+    );
     // update bill to latest state
     await dispatch(
       updateBill({

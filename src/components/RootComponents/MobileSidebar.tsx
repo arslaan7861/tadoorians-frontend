@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import {
+  ChartAreaIcon,
   ChartNoAxesCombined,
-  CreditCard,
   IndianRupee,
   Utensils,
 } from "lucide-react";
@@ -10,7 +10,7 @@ import Link from "next/link";
 const menuItems = [
   { icon: IndianRupee, label: "price" },
   { icon: Utensils, label: "table" },
-  { icon: CreditCard, label: "credits" },
+  { icon: ChartAreaIcon, label: "analytics", url: "/analytics" },
   { icon: ChartNoAxesCombined, label: "history" },
 ];
 

@@ -41,7 +41,7 @@ export default async function BillsPage(props: {
 
       switch (dateType) {
         case "Daily":
-          filters.timestamp.$gte = startOfDay(parsedDate).getSeconds();
+          filters.timestamp.$gte = startOfDay(parsedDate).getTime();
           filters.timestamp.$lte = endOfDay(parsedDate).getTime();
           break;
         case "Monthly":

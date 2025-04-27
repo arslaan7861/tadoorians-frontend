@@ -15,13 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+
 import { Plus, Trash2 } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 import { toast } from "sonner";
@@ -34,6 +28,8 @@ import { useDispatch } from "react-redux";
 import { getData } from "@/State/Tables";
 import { useRouter } from "next/navigation";
 import { isOffline } from "@/utils/isOffline";
+
+import Categoryselect from "./Categoryselect";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -175,7 +171,7 @@ export function ItemForm({
           <h1 className="py-2 h-16 sticky top-0 bg-background w-full flex items-center">
             {item.name ? <>Edit {item.name}</> : "Add new dish"}
           </h1>
-          <article className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <article className="md:grid md:grid-cols-2 gap-6">
             <FormField
               control={form.control}
               name="name"
@@ -183,7 +179,7 @@ export function ItemForm({
                 <FormItem>
                   <FormLabel>Item Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Margherita Pizza" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormDescription>The name of the menu item.</FormDescription>
                   <FormMessage />
@@ -194,32 +190,9 @@ export function ItemForm({
             <FormField
               control={form.control}
               name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    The category this item belongs to.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                return <Categoryselect categories={categories} field={field} />;
+              }}
             />
             <FormField
               control={form.control}
@@ -243,37 +216,6 @@ export function ItemForm({
               )}
             />
           </article>
-
-          {/* <FormField
-              control={form.control}
-              name="image"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Image URL</FormLabel>
-                  <FormControl>
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="https://example.com/image.jpg"
-                        {...field}
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="shrink-0"
-                        //   onClick={() => {}}
-                      >
-                        <Upload className="h-4 w-4 mr-2" />
-                        Upload
-                      </Button>
-                    </div>
-                  </FormControl>
-                  <FormDescription>
-                    Provide a URL for the menu item image.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
 
           <div>
             <div className="flex flex-col gap-2 items-center justify-between mb-2">
@@ -342,46 +284,6 @@ export function ItemForm({
                     />
                   </CardContent>
                 </Card>
-                // <div key={size} className=" rounded-md bg-muted/20">
-                //   <FormField
-                //     control={form.control}
-                //     name={`sizes.${size}.price`}
-                //     render={({ field }) => (
-                //       <FormItem className=" flex items-center border">
-                //         <FormLabel className="border min-w-max ">
-                //           {size} Price
-                //         </FormLabel>
-                //         <FormControl className="pt-0 border">
-                //           <Input
-                //             type="number"
-                //             className="m-2 mb-2"
-                //             min="0"
-                //             step="0.01"
-                //             placeholder="0.00"
-                //             {...field}
-                //             onChange={(e) =>
-                //               field.onChange(
-                //                 Number.parseFloat(e.target.value) || 0
-                //               )
-                //             }
-                //           />
-                //         </FormControl>
-                //         <FormMessage />
-                //       </FormItem>
-                //     )}
-                //   />
-
-                //   <Button
-                //     type="button"
-                //     variant="ghost"
-                //     size="sm"
-                //     //   onClick={() => removeSize(size)}
-                //     className="h-8 w-8 p-0"
-                //   >
-                //     <Trash2 className="h-4 w-4 text-destructive" />
-                //     <span className="sr-only">Remove {size}</span>
-                //   </Button>
-                // </div>
               ))}
             </div>
           </div>

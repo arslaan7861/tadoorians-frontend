@@ -23,9 +23,9 @@ const BillSchema = new Schema<BillModelType>({
     unique: [true, "Bill already printed"],
   },
   amountPayable: { type: Number, required: true },
-  timestamp: { type: Number, required: true, index: true }, // Enables time-based analytics
+  timestamp: { type: Number, required: true, index: true },
 });
-BillSchema.index({ "billcontent.name": 1, tablestamp: 1 }); // Querying dishes over time
+BillSchema.index({ "billcontent.name": 1, tablestamp: 1, timestamp: 1 }); // Querying dishes over time
 
 const BillModel: Model<BillModelType> =
   models.Bill || model<BillModelType>("Bill", BillSchema);

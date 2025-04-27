@@ -11,6 +11,7 @@ import {
   removedServerTable,
 } from "@/Server-actions/tableActions";
 import { isOffline } from "@/utils/isOffline";
+import { formatDate } from "date-fns";
 
 export const initialState: OrdersState = {
   tables: {},
@@ -83,7 +84,7 @@ export const EmptyTable = createAsyncThunk(
         });
         return;
       }
-      const resp = (await EmptyTableOnServer(tableId)) as string;
+      const resp = (await EmptyTableOnServer(tableId, Date.now())) as string;
       const serverResponse = JSON.parse(resp) as {
         table: ITable;
         ok: boolean;
@@ -93,10 +94,8 @@ export const EmptyTable = createAsyncThunk(
           id: toastId,
           description: "Please try again...",
         });
-      console.log(serverResponse.table.updatedAt);
-      const tablestamp = serverResponse.table.updatedAt
-        ? new Date(serverResponse.table.updatedAt).getTime()
-        : Date.now();
+      console.log(formatDate(serverResponse.table.tablestamp, "dd HH:mm:ss "));
+      const tablestamp = serverResponse.table.tablestamp;
       console.log("cleaned", tablestamp);
 
       dispatch(
