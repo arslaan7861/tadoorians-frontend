@@ -4,6 +4,7 @@ import TableModel from "@/DB/tableModel";
 import { tableType } from "@/utils/types";
 import connectDB from "@/DB";
 import { getEmptyMenu } from "./menuFunctions";
+// import BillModel from "@/DB/billSchema";
 export async function updateEmptyTables() {
   try {
     await connectDB();
@@ -18,15 +19,17 @@ export async function updateEmptyTables() {
     console.log(error);
   }
 }
-export async function EmptyTableOnServer(tableId: string) {
+export async function EmptyTableOnServer(tableId: string, timestamp?: number) {
   try {
     await connectDB();
     console.log("cleaning table ", tableId);
     const table = await TableModel.findOne({ tableId });
     if (!table) return JSON.stringify({ ok: false });
+    console.log(table.tablestamp, timestamp ?? 0);
+
     table.OrderDetails = await getEmptyMenu();
     table.totalAmount = 0;
-    table.tablestamp = Date.now();
+    table.tablestamp = timestamp || Date.now();
     table.totalDishes = 0;
     table.save();
     console.log("cleaned table ", tableId);

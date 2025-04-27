@@ -1,16 +1,16 @@
 import React from "react";
 import {
+  ChartAreaIcon,
   ChartNoAxesCombined,
-  CreditCard,
   IndianRupee,
   Utensils,
 } from "lucide-react";
 import Link from "next/link";
 const menuItems = [
-  { icon: Utensils, label: "table" },
-  { icon: IndianRupee, label: "price" },
-  { icon: CreditCard, label: "credits" },
-  { icon: ChartNoAxesCombined, label: "history" },
+  { icon: Utensils, label: "table", url: "/table" },
+  { icon: IndianRupee, label: "price", url: "/price" },
+  { icon: ChartNoAxesCombined, label: "history", url: "/history" },
+  { icon: ChartAreaIcon, label: "analytics", url: "/analytics" },
 ];
 function DesktopSidebar() {
   return (
@@ -19,9 +19,9 @@ function DesktopSidebar() {
         <nav className="p-4">
           <ul className="space-y-2">
             {menuItems.map((item) => (
-              <li key={item.label}>
+              <li key={item.url}>
                 <Link
-                  href={"/admin/" + item.label}
+                  href={"/admin" + item.url}
                   className="flex items-center w-full p-2 rounded-lg text-secondaryTextColor hover:text-accentColor"
                   style={{ height: "40px" }}
                 >
